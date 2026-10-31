@@ -25,7 +25,9 @@ button{border:0;background:none;cursor:pointer}
 
 /* 화면 배치: 머리글 / 지도 카드 / 설정 카드 */
 #appHead{flex:0 0 auto;display:flex;align-items:baseline;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 16px 8px}
-#appHead b{font-size:18px;font-weight:800}
+#appHead{align-items:center}
+#appHead b{font-size:18px;font-weight:800;white-space:nowrap}
+#appHead span{white-space:nowrap}
 #appHead span{font-size:13px;color:var(--mut);font-weight:600}
 #mapWrap{position:relative;z-index:0;flex:0 0 auto;height:36dvh;min-height:200px;margin:0 12px;border-radius:18px;overflow:hidden;box-shadow:0 2px 10px rgba(15,23,42,.12);background:#dbe3ea;transition:height .25s}
 body.scr-run #mapWrap{height:40dvh}
@@ -48,6 +50,60 @@ body.scr-summary #mapWrap{height:38dvh}
 .course-label div{position:absolute;left:0;top:0;width:max-content;transform:translate(-50%,-150%);white-space:nowrap;background:#fff;border-radius:8px;padding:3px 7px;font-size:12px;font-weight:800;box-shadow:0 1px 5px rgba(0,0,0,.25)}
 .course-label.over div{background:var(--acc);color:#fff}
 
+.inapp{background:#fef3c7;border:1px solid #fcd34d;border-radius:16px;padding:12px 14px;margin-bottom:10px;font-size:14px;line-height:1.5}
+.inapp[hidden]{display:none}
+.inapp p{margin:4px 0 8px;color:#78350f}
+.inapp button{width:100%;padding:12px;border-radius:12px;background:#f59e0b;color:#fff;font-weight:800;font-size:15px}
+.inapp small{display:block;margin-top:6px;color:#92400e;font-size:12px}
+#tabs{margin-left:auto;display:flex;background:#e2e8f0;border-radius:12px;padding:3px;gap:2px}
+#tabs[hidden]{display:none}
+#tabs button{white-space:nowrap;padding:6px 10px;border-radius:9px;font-size:13px;font-weight:700;color:var(--mut)}
+#tabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+body.scr-history #mapWrap{height:30dvh}
+.profcard{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.profcard span{font-weight:700;font-size:15px}
+.profcard button{padding:8px 14px;border-radius:10px;background:var(--bg);font-weight:800;font-size:14px}
+.pmodal{position:fixed;inset:0;z-index:4500;background:rgba(15,23,42,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+.pmodal[hidden]{display:none}
+.pmodal .box{background:#fff;border-radius:20px;padding:20px;width:100%;max-width:380px}
+.pmodal h2{font-size:19px;margin-bottom:4px}
+.pmodal p{color:var(--mut);font-size:13px;margin-bottom:12px}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pmodal label{display:block;font-size:13px;font-weight:700;color:var(--mut)}
+.pmodal input{display:block;width:100%;margin-top:4px;height:44px;border:1.5px solid var(--line);border-radius:10px;text-align:center;font-size:18px;font-weight:800}
+.pmodal input:focus{outline:none;border-color:var(--acc)}
+.pname{margin-top:10px}
+.pbtns{display:grid;grid-template-columns:1fr 2fr;gap:8px;margin-top:14px}
+.pbtns button{padding:13px;border-radius:12px;font-weight:800;font-size:16px;background:var(--acc);color:#fff}
+.pbtns button.ghost{background:var(--bg);color:var(--mut)}
+.submitcard p{font-size:13px;color:var(--mut);margin:2px 0 8px;line-height:1.5}
+.submitcard button{width:100%;padding:13px;border-radius:12px;background:var(--ok);color:#fff;font-weight:800;font-size:16px}
+.submitcard button:disabled{opacity:.5}
+.submitcard.done button{background:var(--bg);color:var(--ok)}
+.stat4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}
+.stat4 div{background:var(--bg);border-radius:12px;padding:8px 4px;text-align:center}
+.stat4 b{display:block;font-size:19px;font-weight:800}
+.stat4 span{font-size:11px;color:var(--mut);font-weight:600}
+.pbrow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-size:15px}
+.pbrow:last-child{border-bottom:0}
+.pbrow b{font-weight:800} .pbrow small{color:var(--mut);margin-left:6px}
+.pbrow .new{color:var(--acc);font-weight:800;margin-left:6px;font-size:12px}
+#hChart svg{width:100%;height:auto;display:block;margin-top:6px}
+.trend{text-align:center;font-weight:700;font-size:14px;margin-top:4px}
+.hfilter{margin:6px 0 4px}
+.hrow{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:10px 2px;border-bottom:1px solid var(--line);cursor:pointer}
+.hrow:last-child{border-bottom:0}
+.hrow .d{font-size:13px;color:var(--mut);font-weight:700;width:68px}
+.hrow .m{font-weight:800;font-size:15px}
+.hrow .m small{color:var(--mut);font-weight:600;margin-left:6px;font-size:13px}
+.hrow .i{font-size:15px}
+.hempty{text-align:center;color:var(--mut);padding:18px 0;font-size:14px}
+.backbtn{padding:8px 12px;border-radius:10px;background:#fff;font-weight:800;margin-bottom:10px;box-shadow:0 1px 3px rgba(15,23,42,.08)}
+.share-btns3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px}
+.share-btns3 button{padding:13px 4px;border-radius:14px;font-weight:800;font-size:15px;background:var(--ink);color:#fff}
+.share-btns3 button:nth-child(2){background:var(--blue)} .share-btns3 button:nth-child(3){background:var(--ok)}
+.share-btns3 button:disabled{opacity:.45}
+.delbtn{width:100%;padding:12px;border-radius:12px;background:#fee2e2;color:var(--slow);font-weight:800;margin-bottom:12px}
 /* 아래 영역 */
 .panel{flex:1 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain;padding:12px 12px calc(12px + env(safe-area-inset-bottom))}
 .card{background:var(--card);border-radius:18px;padding:12px 14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(15,23,42,.06)}
@@ -84,14 +140,21 @@ h3{font-size:13px;color:var(--mut);font-weight:700;margin:16px 0 6px;letter-spac
 .row>label{font-weight:600;font-size:15px;flex:0 0 auto}
 .row.stack{flex-direction:column;align-items:stretch;gap:6px}
 .row.stack .seg{flex-wrap:nowrap}
-.row.stack .seg button{flex:1;padding:8px 4px}
+.row.stack .seg button{flex:1;padding:8px 2px;white-space:nowrap;font-size:13.5px}
 .row .hint{display:block;color:var(--mut);font-size:12px;font-weight:400;margin-top:1px}
 .seg{display:flex;flex-wrap:wrap;background:var(--bg);border-radius:12px;padding:3px;gap:2px}
 .seg button{padding:7px 10px;border-radius:9px;font-size:14px;font-weight:600;color:var(--mut)}
 .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
 .field{display:flex;align-items:center;gap:4px}
 .field button{width:36px;height:38px;border-radius:10px;background:var(--bg);font-size:20px;font-weight:700}
-.field input{width:84px;height:38px;border:1.5px solid var(--line);border-radius:10px;text-align:center;font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;background:#fff}
+.field .ms{display:flex;align-items:center;gap:3px;height:38px;border:1.5px solid var(--line);border-radius:10px;padding:0 6px;background:#fff}
+.field .ms:focus-within{border-color:var(--acc)}
+.field .ms i{font-style:normal;font-size:13px;font-weight:700;color:var(--mut)}
+.field .ms input{border:0;width:32px;height:34px;padding:0;text-align:right;font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;background:var(--bg);border-radius:6px}
+.field .ms input.ss{width:28px}
+.field .ms input.sp{width:46px;text-align:center}
+.field .ms input:focus{outline:none;background:#fff7ed}
+.field input.old{width:84px;height:38px;border:1.5px solid var(--line);border-radius:10px;text-align:center;font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;background:#fff}
 .field input:focus{outline:none;border-color:var(--acc)}
 .field small{font-size:12px;color:var(--mut);width:34px}
 .calc{margin-top:6px;font-size:13px;color:var(--mut);text-align:center;background:var(--bg);border-radius:10px;padding:8px}
@@ -220,7 +283,9 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
 </head>
 <body class="scr-setup">
 
-<header id="appHead"><b>🏃 자유학교 러닝</b><span id="headSub">오늘의 러닝</span></header>
+<header id="appHead"><b>🏃 자유학교 러닝</b><span id="headSub"></span>
+  <nav id="tabs"><button data-t="setup" class="on">🏃 러닝하기</button><button data-t="history">📋 내 기록</button></nav>
+</header>
 
 <div id="mapWrap">
   <div id="map"></div>
@@ -238,6 +303,17 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
 
 <!-- 1) 준비 화면 -->
 <section id="setup" class="panel">
+  <div id="inappBox" class="inapp" hidden>
+    <b>⚠️ 앱 안의 브라우저로 열려 있어요</b>
+    <p>여기서는 <b>음성 안내·사진/영상 저장</b>이 안 될 수 있어요. 크롬(아이폰은 사파리)으로 열어 주세요.</p>
+    <button id="bExternal">🌐 크롬/사파리로 열기</button>
+    <small id="inappHow"></small>
+  </div>
+
+  <div class="card profcard">
+    <span id="profText">👤 학생 정보를 입력해 주세요</span>
+    <button id="bProfile">입력</button>
+  </div>
   <div id="gpsErr" class="notice" hidden></div>
   <div id="wlNotice" class="notice" hidden>이 브라우저는 화면 꺼짐 방지를 지원하지 않아요. 달리는 동안 화면이 꺼지지 않도록 <b>휴대폰 설정에서 자동 잠금을 잠시 꺼 주세요.</b></div>
 
@@ -246,20 +322,20 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
     <div class="row stack">
       <label>목표 거리</label>
       <div class="seg" id="segGoal">
-        <button data-v="1000">1km</button><button data-v="1600">1.6km</button><button data-v="2000">2km</button><button data-v="3000">3km</button><button data-v="custom" id="goalCustom">직접</button>
+        <button data-v="500">500m</button><button data-v="1000">1km</button><button data-v="1500">1.5km</button><button data-v="2000">2km</button><button data-v="custom" id="goalCustom">직접 입력</button>
       </div>
     </div>
     <div class="row">
-      <label>목표 시간<span class="hint">분:초</span></label>
-      <div class="field"><button data-k="time" data-d="-10">−</button><input id="inTime" inputmode="decimal"><button data-k="time" data-d="10">+</button></div>
+      <label>목표 시간<span class="hint">완주 시간</span></label>
+      <div class="field"><button data-k="time" data-d="-10">−</button><span class="ms"><input id="inTimeM" class="mm" inputmode="numeric" maxlength="3"><i>분</i><input id="inTimeS" class="ss" inputmode="numeric" maxlength="2"><i>초</i></span><button data-k="time" data-d="10">+</button></div>
     </div>
     <div class="row">
-      <label>목표 페이스<span class="hint">1km당 분:초</span></label>
-      <div class="field"><button data-k="pace" data-d="-5">−</button><input id="inPace" inputmode="decimal"><button data-k="pace" data-d="5">+</button></div>
+      <label>목표 페이스<span class="hint">1km 달리는 시간</span></label>
+      <div class="field"><button data-k="pace" data-d="-5">−</button><span class="ms"><input id="inPaceM" class="mm" inputmode="numeric" maxlength="2"><i>분</i><input id="inPaceS" class="ss" inputmode="numeric" maxlength="2"><i>초</i></span><button data-k="pace" data-d="5">+</button></div>
     </div>
     <div class="row">
       <label>목표 속도<span class="hint">km/h</span></label>
-      <div class="field"><button data-k="speed" data-d="-0.1">−</button><input id="inSpeed" inputmode="decimal"><button data-k="speed" data-d="0.1">+</button></div>
+      <div class="field"><button data-k="speed" data-d="-0.1">−</button><span class="ms"><input id="inSpeed" class="sp" inputmode="decimal"><i>km/h</i></span><button data-k="speed" data-d="0.1">+</button></div>
     </div>
     <div class="calc" id="calcTxt"></div>
   </div>
@@ -340,6 +416,11 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
     <div class="legend">경로 색: 🟢 목표 페이스 · 🔴 느림 · 🔵 빠름</div>
   </div>
   <div class="share-btns"><button id="bPhoto">📷 사진 만들기</button><button id="bVideo">🎬 경로 영상</button></div>
+  <div class="card submitcard" id="submitCard">
+    <h3>📤 선생님께 기록 제출</h3>
+    <p id="submitInfo"></p>
+    <button id="bSubmit">📤 기록 제출</button>
+  </div>
   <div class="card">
     <h3>📊 구간 기록</h3>
     <table>
@@ -349,6 +430,45 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
   </div>
   <button class="big toSetup">⚙️ 처음 설정으로</button>
 </section>
+
+<!-- 4) 내 기록 -->
+<section id="history" class="panel" hidden>
+  <div id="hList">
+    <div class="card"><h3>📅 이번 달</h3><div class="stat4" id="hMonth"></div></div>
+    <div class="card"><h3>🏅 나의 최고 기록</h3><div id="hPB"></div></div>
+    <div class="card"><h3>📈 페이스 변화 <small>최근 10회 · 위로 갈수록 빠름</small></h3><div id="hChart"></div><div class="trend" id="hTrend"></div></div>
+    <div class="card">
+      <h3>📋 기록 목록</h3>
+      <div class="seg hfilter" id="hFilter"><button data-v="all" class="on">전체</button><button data-v="500">500m</button><button data-v="1000">1km</button><button data-v="1500">1.5km</button><button data-v="2000">2km</button></div>
+      <div id="hRows"></div>
+      <div class="legend">🏁 목표 달성 · ✅ 제출됨 · 📤 미제출</div>
+    </div>
+  </div>
+  <div id="hDetail" hidden>
+    <button class="backbtn" id="hBack">← 목록으로</button>
+    <div class="card" id="hInfo"></div>
+    <div class="share-btns3"><button id="hPhoto">📷 사진</button><button id="hVideo">🎬 영상</button><button id="hSubmit">📤 제출</button></div>
+    <div class="card"><h3>📊 구간 기록</h3>
+      <table><thead><tr><th>구간</th><th>거리</th><th>구간 시간</th><th>페이스</th><th>목표 대비</th></tr></thead><tbody id="hSplits"></tbody></table>
+    </div>
+    <button class="delbtn" id="hDel">🗑 이 기록 삭제</button>
+  </div>
+</section>
+
+<!-- 학생 정보 입력 창 -->
+<div id="profModal" class="pmodal" hidden>
+  <div class="box">
+    <h2>👤 학생 정보</h2>
+    <p>기록을 선생님께 제출할 때 쓰여요. 한 번 입력하면 기억해요.</p>
+    <div class="pgrid">
+      <label>학년<input id="pGrade" inputmode="numeric" maxlength="1" placeholder="3"></label>
+      <label>반<input id="pClass" inputmode="numeric" maxlength="2" placeholder="2"></label>
+      <label>번호<input id="pNo" inputmode="numeric" maxlength="2" placeholder="15"></label>
+    </div>
+    <label class="pname">이름<input id="pName" maxlength="10" placeholder="김자유"></label>
+    <div class="pbtns"><button id="pCancel" class="ghost">취소</button><button id="pSave">저장</button></div>
+  </div>
+</div>
 
 <!-- 새로고침 후 복구 확인 창 -->
 <div id="modal" hidden>
@@ -404,6 +524,20 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
 </div>
 
 <script>
+/* ===== 카카오톡 등 앱 안 브라우저 → 크롬/사파리로 열기 =====
+ * 앱 안 브라우저는 음성 안내·파일 저장·화면 꺼짐 방지가 안 되거나 불안정함 */
+const UA = navigator.userAgent;
+const IN_KAKAO = /KAKAOTALK/i.test(UA);
+const IN_APP = IN_KAKAO || /NAVER\(inapp|; Line\/|Instagram|FBAN|FBAV|BAND\/|DaumApps|everytimeApp|; wv\)/i.test(UA);
+const IS_ANDROID = /Android/i.test(UA);
+function openExternal() {
+  if (IN_KAKAO) location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(location.href);
+  else if (IS_ANDROID) location.href = 'intent://' + location.href.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end';
+}
+if (IN_KAKAO) {   // 카톡이면 자동으로 한 번 기본 브라우저로 넘김
+  let tried = false; try { tried = sessionStorage.getItem('extTried') === '1'; sessionStorage.setItem('extTried', '1'); } catch {}
+  if (!tried) openExternal();
+}
 /* ===== 설정 =====
  * 브이월드(국토교통부) 키를 넣으면 국내 상세 지도/항공사진을 씁니다. (무료, vworld.kr 에서 발급)
  * 비워두면 OpenStreetMap(일반) + Esri(위성)를 사용합니다.
@@ -532,7 +666,16 @@ async function keepScreenOn() {
   try { wakeLock = await navigator.wakeLock.request('screen'); } catch {}
 }
 function releaseScreen() { try { wakeLock && wakeLock.release(); } catch {} wakeLock = null; }
-if (!('wakeLock' in navigator)) $('#wlNotice').hidden = false;
+if (!('wakeLock' in navigator) && !IN_APP) $('#wlNotice').hidden = false;
+if (IN_APP) {
+  $('#inappBox').hidden = false;
+  $('#inappHow').textContent = IS_ANDROID ? '버튼이 안 되면: 오른쪽 위 ⋮ 메뉴 → "다른 브라우저로 열기"'
+    : '버튼이 안 되면: 오른쪽 아래 ⋯ 또는 공유 버튼 → "Safari로 열기"';
+  $('#bExternal').onclick = () => {
+    if (IN_KAKAO || IS_ANDROID) openExternal();
+    else alert('오른쪽 아래 ⋯ 또는 공유 버튼을 누르고 "Safari로 열기"를 선택해 주세요.');
+  };
+}
 
 /* ===== 설정값 ===== */
 const prefs = Object.assign(
@@ -890,9 +1033,11 @@ window.addEventListener('beforeunload', e => {
 
 /* ===== 화면 전환 ===== */
 function show(id) {
-  for (const s of ['setup', 'runPanel', 'summary']) $('#' + s).hidden = s !== id;
-  document.body.className = 'scr-' + { setup: 'setup', runPanel: 'run', summary: 'summary' }[id];
-  $('#headSub').textContent = { setup: '오늘의 러닝', runPanel: '러닝 중', summary: '러닝 결과' }[id];
+  for (const s of ['setup', 'runPanel', 'summary', 'history']) $('#' + s).hidden = s !== id;
+  document.body.className = 'scr-' + { setup: 'setup', runPanel: 'run', summary: 'summary', history: 'history' }[id];
+  $('#headSub').textContent = { setup: '', runPanel: '러닝 중', summary: '러닝 결과', history: '' }[id];
+  $('#tabs').hidden = !(id === 'setup' || id === 'history');
+  $$('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.t === id));
   if (id !== 'setup' && drawing) { drawing = null; $('#drawBar').hidden = true; renderCourse(); }
   $('#' + id).scrollTop = 0;
   setTimeout(() => map.invalidateSize(), 300);
@@ -901,13 +1046,14 @@ function show(id) {
 /* ===== 준비 화면: 목표 자동 계산 ===== */
 function renderPrefs(skip) {
   const km = prefs.goal / 1000;
-  if (skip !== 'time') $('#inTime').value = msText(prefs.target * km);
-  if (skip !== 'pace') $('#inPace').value = msText(prefs.target);
+  const putMS = (mId, sId, sec) => { const t = Math.round(sec); $(mId).value = Math.floor(t / 60); $(sId).value = String(t % 60).padStart(2, '0'); };
+  if (skip !== 'time') putMS('#inTimeM', '#inTimeS', prefs.target * km);
+  if (skip !== 'pace') putMS('#inPaceM', '#inPaceS', prefs.target);
   if (skip !== 'speed') $('#inSpeed').value = (3600 / prefs.target).toFixed(1);
-  const presets = ['1000', '1600', '2000', '3000'];
+  const presets = ['500', '1000', '1500', '2000'];
   $$('#segGoal button').forEach(b => b.classList.toggle('on',
     b.dataset.v === String(prefs.goal) || (b.dataset.v === 'custom' && !presets.includes(String(prefs.goal)))));
-  $('#goalCustom').textContent = presets.includes(String(prefs.goal)) ? '직접' : `${fmtKm(prefs.goal)}km`;
+  $('#goalCustom').textContent = presets.includes(String(prefs.goal)) ? '직접 입력' : (prefs.goal < 1000 ? `${prefs.goal}m` : `${fmtKm(prefs.goal)}km`);
   $$('#segInt button').forEach(b => b.classList.toggle('on', +b.dataset.v === prefs.interval));
   $$('#segWarn button').forEach(b => b.classList.toggle('on', +b.dataset.v === prefs.warnEvery));
   $$('#segTol button').forEach(b => b.classList.toggle('on', +b.dataset.v === prefs.tol));
@@ -923,8 +1069,11 @@ function setTarget(paceSec, skip) {
   renderPrefs(skip);
 }
 // 직접 입력 → 나머지 자동 계산
-$('#inTime').addEventListener('change', e => setTarget(parseMS(e.target.value) / (prefs.goal / 1000)));
-$('#inPace').addEventListener('change', e => setTarget(parseMS(e.target.value)));
+// 분·초 칸: 숫자만, 초는 0~59 (넘으면 분으로 넘김)
+const readMS = (mId, sId) => { const m = parseInt($(mId).value) || 0, sec = parseInt($(sId).value) || 0; return m * 60 + sec; };
+['#inTimeM', '#inTimeS', '#inPaceM', '#inPaceS'].forEach(id => $(id).addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g, ''); }));
+['#inTimeM', '#inTimeS'].forEach(id => $(id).addEventListener('change', () => setTarget(readMS('#inTimeM', '#inTimeS') / (prefs.goal / 1000))));
+['#inPaceM', '#inPaceS'].forEach(id => $(id).addEventListener('change', () => setTarget(readMS('#inPaceM', '#inPaceS'))));
 $('#inSpeed').addEventListener('change', e => setTarget(3600 / parseFloat(e.target.value)));
 $$('.field input').forEach(i => {
   i.addEventListener('keydown', e => { if (e.key === 'Enter') i.blur(); });
@@ -939,7 +1088,7 @@ $$('.field button').forEach(b => b.onclick = () => {
 });
 $$('#segGoal button').forEach(b => b.onclick = () => {
   if (b.dataset.v === 'custom') {
-    const v = parseFloat(prompt('목표 거리를 km로 입력하세요 (예: 2.5)', fmtKm(prefs.goal)));
+    const v = parseFloat(prompt('목표 거리를 km로 입력하세요\n(예: 0.8 = 800m, 2.5 = 2.5km)', fmtKm(prefs.goal)));
     if (!(v > 0 && v <= 42.195)) return;
     prefs.goal = Math.round(v * 1000);
   } else prefs.goal = +b.dataset.v;
@@ -1094,25 +1243,27 @@ $('#bEnd').onclick = () => {
 };
 function finishRun() {
   finished = true;
-  $('#lock').hidden = true;
-  if (run.activeSince != null) { run.movingMs += now() - run.activeSince; run.activeSince = null; }
-  const restDist = run.dist - run.lastSplitDist;
-  if (restDist >= 50) {
-    const ms = run.movingMs - run.lastSplitMs, pace = (ms / 1000) / (restDist / 1000);
-    run.splits.push({ at: run.dist, dist: restDist, ms, pace, diff: Math.round(pace - run.target), partial: true });
-  }
-  stopDemo(); releaseScreen();
-  speechSynthesis?.cancel();
-  const km = run.dist / 1000, avg = km > 0 ? (run.movingMs / 1000) / km : Infinity;
-  say(`수고했어요! 총 ${sayDist(Math.round(run.dist))}, ${sayTime(run.movingMs / 1000)}. 평균 페이스 ${isFinite(avg) ? sayTime(avg) : '기록 없음'}.`);
-  if (!run.demo) {
-    const hist = load('runHistory') || [];
-    hist.unshift({ date: run.startedAt, dist: run.dist, ms: run.movingMs, goal: run.goal, goalMs: run.goalMs, target: run.target, splits: run.splits });
-    store('runHistory', hist.slice(0, 30));
-  }
-  unstore('runActive');
-  showSummary();
-};
+  // 어떤 기능이 없는 브라우저(카톡 등)에서도 종료는 끝까지 진행되도록 단계마다 보호
+  const safe = f => { try { f(); } catch (e) { console.error(e); } };
+  safe(() => { $('#lock').hidden = true; });
+  safe(() => { if (run.activeSince != null) { run.movingMs += now() - run.activeSince; run.activeSince = null; } });
+  safe(() => {
+    const restDist = run.dist - run.lastSplitDist;
+    if (restDist >= 50) {
+      const ms = run.movingMs - run.lastSplitMs, pace = (ms / 1000) / (restDist / 1000);
+      run.splits.push({ at: run.dist, dist: restDist, ms, pace, diff: Math.round(pace - run.target), partial: true });
+    }
+  });
+  safe(stopDemo); safe(releaseScreen);
+  safe(() => { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); });
+  safe(() => {
+    const km = run.dist / 1000, avg = km > 0 ? (run.movingMs / 1000) / km : Infinity;
+    say(`수고했어요! 총 ${sayDist(Math.round(run.dist))}, ${sayTime(run.movingMs / 1000)}. 평균 페이스 ${isFinite(avg) ? sayTime(avg) : '기록 없음'}.`);
+  });
+  safe(() => { if (!run.demo) saveRunRecord(run); });
+  safe(() => unstore('runActive'));
+  try { showSummary(); } catch (e) { console.error(e); show('summary'); }
+}
 
 function showSummary() {
   const km = run.dist / 1000;
@@ -1139,6 +1290,7 @@ function showSummary() {
   }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--mut)">구간 기록이 없어요</td></tr>';
   drawColoredRoute();
   show('summary');
+  refreshSubmitUI();
   const pts = run.points.map(p => [p[0], p[1]]);
   if (pts.length > 1) setTimeout(() => { follow = false; map.fitBounds(L.latLngBounds(pts), { padding: [30, 30] }); }, 100);
 }
@@ -1147,6 +1299,10 @@ function showSummary() {
 const PACE_COL = { ok: '#22c55e', slow: '#ef4444', fast: '#3b82f6' };
 function computePaces(r) {   // 각 지점의 앞뒤 10초 페이스 → 상태
   const pts = r.points, n = pts.length, pace = new Array(n).fill(Infinity), st = new Array(n).fill('ok');
+  if (n && pts[0].length >= 7) {   // 저장된 기록: 줄이기 전에 계산해 둔 값 사용
+    const SN = ['ok', 'slow', 'fast'];
+    return { pace: pts.map(p => p[6] == null ? Infinity : p[6]), st: pts.map(p => SN[p[5]] || 'ok') };
+  }
   for (let i = 0; i < n; i++) {
     let a = i, b = i;
     while (a > 0 && pts[a - 1][4] === pts[i][4] && pts[i][2] - pts[a - 1][2] <= 10000) a--;
@@ -1647,6 +1803,313 @@ $('#stMake').onclick = async () => {
   }
   studio.recording = false; studio.clock = null; studio.p = 1;
   updSaveBtn(); drawFrame();
+};
+
+/* ===== 구글 시트 제출 설정 =====
+ * SHEET_URL: 선생님이 배포한 앱스 스크립트 웹앱 주소 (https://script.google.com/macros/s/…/exec)
+ * CLASS_CODE: 앱스 스크립트의 CLASS_CODE와 같은 값이어야 기록을 받아 줌
+ */
+const SHEET_URL = '';
+const CLASS_CODE = 'RUN2026';
+
+/* ===== 학생 정보 ===== */
+let profile = load('runProfile') || {};
+const profOk = () => profile.grade && profile.cls && profile.no && profile.name;
+const profLabel = () => `${profile.grade}학년 ${profile.cls}반 ${profile.no}번 ${profile.name}`;
+function renderProfile() {
+  $('#profText').textContent = profOk() ? '👤 ' + profLabel() : '👤 학생 정보를 입력해 주세요';
+  $('#bProfile').textContent = profOk() ? '수정' : '입력';
+}
+let profDone = null;
+function openProfile(after) {
+  profDone = after || null;
+  $('#pGrade').value = profile.grade || ''; $('#pClass').value = profile.cls || '';
+  $('#pNo').value = profile.no || ''; $('#pName').value = profile.name || '';
+  $('#profModal').hidden = false;
+}
+['#pGrade', '#pClass', '#pNo'].forEach(id => $(id).addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g, ''); }));
+$('#bProfile').onclick = () => openProfile();
+$('#pCancel').onclick = () => { $('#profModal').hidden = true; profDone = null; };
+$('#pSave').onclick = () => {
+  const p = { grade: $('#pGrade').value.trim(), cls: $('#pClass').value.trim(), no: $('#pNo').value.trim(), name: $('#pName').value.trim() };
+  if (!p.grade || !p.cls || !p.no || !p.name) { alert('학년, 반, 번호, 이름을 모두 입력해 주세요.'); return; }
+  profile = p; store('runProfile', profile); renderProfile();
+  $('#profModal').hidden = true;
+  const f = profDone; profDone = null; if (f) f();
+};
+renderProfile();
+
+/* ===== 기록 저장소: IndexedDB (용량 넉넉) / 안 되면 localStorage ===== */
+const DB = (() => {
+  const LS = 'runRecords';
+  if (!window.indexedDB) {
+    const all = () => load(LS) || [];
+    return {
+      put: async r => { const a = all().filter(x => x.id !== r.id); a.push(Object.assign({}, r, { route: null })); store(LS, a); },
+      del: async id => store(LS, all().filter(x => x.id !== id)),
+      all: async () => all(), get: async id => all().find(x => x.id === id)
+    };
+  }
+  let dbp = null;
+  const open = () => dbp ||= new Promise((res, rej) => {
+    const r = indexedDB.open('jayuRun', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('runs', { keyPath: 'id' });
+    r.onsuccess = () => res(r.result); r.onerror = () => { dbp = null; rej(r.error); };
+  });
+  const tx = async (mode, fn) => {
+    const db = await open();
+    return new Promise((res, rej) => {
+      const t = db.transaction('runs', mode), req = fn(t.objectStore('runs'));
+      t.oncomplete = () => res(req && req.result); t.onerror = () => rej(t.error);
+    });
+  };
+  return { put: r => tx('readwrite', s => s.put(r)), del: id => tx('readwrite', s => s.delete(id)), all: () => tx('readonly', s => s.getAll()), get: id => tx('readonly', s => s.get(id)) };
+})();
+// 예전 버전 기록(숫자만) 옮겨 오기
+(async () => {
+  try {
+    if (load('runMigrated1')) return;
+    const old = load('runHistory') || [];
+    for (const h of old) await DB.put({ id: 'old_' + h.date, startedAt: h.date, dist: h.dist, ms: h.ms, goal: h.goal || 0, goalMs: h.goalMs ?? null, target: h.target, tol: 10, splits: h.splits || [], route: null, submitted: false });
+    store('runMigrated1', 1);
+  } catch (e) { console.error(e); }
+})();
+
+/* 경로 줄이기: 원래 선에서 3m 이상 벗어나지 않는 점은 지움 (페이스 색이 바뀌는 점은 남김) */
+function simplifyRoute(r, tol = 3) {
+  const pts = r.points, n = pts.length;
+  if (n < 3) return pts.map(p => [p[0], p[1], p[2], Math.round(p[3]), p[4], 0, null]);
+  const { pace, st } = computePaces(r);
+  const lat0 = pts[0][0] * Math.PI / 180, kx = 111320 * Math.cos(lat0), ky = 110540;
+  const xy = pts.map(p => [p[1] * kx, p[0] * ky]);
+  const keep = new Uint8Array(n);
+  const segDist = (p, a, b) => {
+    const dx = b[0] - a[0], dy = b[1] - a[1], L = dx * dx + dy * dy;
+    const t = L ? Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L)) : 0;
+    return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy);
+  };
+  let s0 = 0;
+  for (let i = 1; i <= n; i++) {
+    if (i < n && pts[i][4] === pts[s0][4]) continue;
+    const stack = [[s0, i - 1]]; keep[s0] = keep[i - 1] = 1;
+    while (stack.length) {
+      const [a, b] = stack.pop(); let md = 0, mi = -1;
+      for (let k = a + 1; k < b; k++) { const d = segDist(xy[k], xy[a], xy[b]); if (d > md) { md = d; mi = k; } }
+      if (md > tol) { keep[mi] = 1; stack.push([a, mi], [mi, b]); }
+    }
+    s0 = i;
+  }
+  for (let i = 1; i < n; i++) if (st[i] !== st[i - 1]) keep[i] = keep[i - 1] = 1;
+  const SI = { ok: 0, slow: 1, fast: 2 }, out = [];
+  for (let i = 0; i < n; i++) if (keep[i]) {
+    const p = pts[i];
+    out.push([+p[0].toFixed(6), +p[1].toFixed(6), Math.round(p[2]), Math.round(p[3]), p[4], SI[st[i]], isFinite(pace[i]) ? Math.round(pace[i]) : null]);
+  }
+  return out;
+}
+// 평가용 '확인 필요' 자동 표시
+function computeFlags(r) {
+  const f = [], pts = r.points;
+  if (r.dist < 200) f.push('거리 200m 미만');
+  if (r.dist > 0 && (r.movingMs / 1000) / (r.dist / 1000) < 180) f.push('평균 페이스 3분/km보다 빠름');
+  let gap = 0, fast = 0;
+  for (let i = 1; i < pts.length; i++) {
+    if (pts[i][4] !== pts[i - 1][4]) continue;
+    const dt = (pts[i][2] - pts[i - 1][2]) / 1000;
+    if (dt > 30) gap++;
+    if (dt > 0 && (pts[i][3] - pts[i - 1][3]) / dt > 7) fast++;
+  }
+  if (gap) f.push(`GPS 끊김 ${gap}회`);
+  if (fast >= 5) f.push('비정상적으로 빠른 구간');
+  return f;
+}
+function saveRunRecord(r) {
+  const id = 'r' + r.startedAt.toString(36) + Math.random().toString(36).slice(2, 6);
+  r.recordId = id;
+  const rec = {
+    id, startedAt: r.startedAt, dist: Math.round(r.dist), ms: Math.round(r.movingMs), goal: r.goal, goalMs: r.goalMs,
+    target: r.target, tol: r.tol, splits: r.splits, flags: computeFlags(r),
+    route: simplifyRoute(r), submitted: false, pending: false
+  };
+  DB.put(rec).catch(e => console.error(e));
+  return id;
+}
+function recordToRun(rec) {
+  return { demo: false, startedAt: rec.startedAt, movingMs: rec.ms, dist: rec.dist, points: rec.route || [], goal: rec.goal,
+    goalMs: rec.goalMs, target: rec.target, tol: rec.tol || 10, splits: rec.splits || [], activeSince: null, recordId: rec.id,
+    lastSplitDist: rec.dist, lastSplitMs: rec.ms };
+}
+
+/* ===== 구글 시트로 제출 ===== */
+const two = n => String(n).padStart(2, '0');
+const dateText = t => { const d = new Date(t); return `${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())} ${two(d.getHours())}:${two(d.getMinutes())}`; };
+function payloadOf(rec) {
+  const km = rec.dist / 1000, paceSec = km > 0 ? rec.ms / 1000 / km : 0, goalSec = rec.target * rec.goal / 1000;
+  const diff = rec.goalMs != null ? Math.round(rec.goalMs / 1000 - goalSec) : '';
+  return {
+    code: CLASS_CODE, id: rec.id, grade: profile.grade, cls: profile.cls, no: profile.no, name: profile.name,
+    date: dateText(rec.startedAt), distKm: +km.toFixed(2), time: fmtTime(rec.ms), timeSec: Math.round(rec.ms / 1000),
+    pace: fmtPace(paceSec), paceSec: Math.round(paceSec), speed: rec.ms ? +(rec.dist / (rec.ms / 1000) * 3.6).toFixed(1) : 0,
+    goalKm: rec.goal / 1000, goalTime: fmtTime(goalSec * 1000), goalResult: rec.goalMs != null ? '달성' : '미달성',
+    goalRecord: rec.goalMs != null ? fmtTime(rec.goalMs) : '', diffSec: diff, targetPace: fmtPace(rec.target),
+    splits: (rec.splits || []).map(s => fmtPace(s.pace)).join(', '), flags: (rec.flags || []).join(' / '),
+    device: (IS_ANDROID ? 'Android' : IS_IOS ? 'iPhone' : 'PC') + (IN_APP ? '(앱 내 브라우저)' : '')
+  };
+}
+async function sendToSheet(body) {
+  try {
+    const r = await fetch(SHEET_URL, { method: 'POST', body });   // text/plain 이라 추가 확인 요청 없음
+    const j = await r.json();
+    if (!j.ok) throw Object.assign(new Error(j.error || 'rejected'), { hard: true });
+    return true;
+  } catch (e) {
+    if (e.hard) throw e;
+    // 응답을 못 읽는 경우(CORS) → no-cors로 한 번 더. 같은 기록은 시트에서 중복 제거됨
+    await fetch(SHEET_URL, { method: 'POST', body, mode: 'no-cors' });
+    return true;
+  }
+}
+async function submitRecord(id, quiet) {
+  const rec = await DB.get(id);
+  if (!rec) return false;
+  if (rec.submitted) { if (!quiet) toast('이미 제출한 기록이에요'); return true; }
+  if (!profOk()) { if (!quiet) openProfile(() => submitRecord(id)); return false; }
+  if (!SHEET_URL) { if (!quiet) alert('선생님이 아직 구글 시트를 연결하지 않았어요.\n기록은 폰에 저장돼 있으니 나중에 📋 내 기록에서 제출할 수 있어요.'); return false; }
+  try {
+    await sendToSheet(JSON.stringify(payloadOf(rec)));
+    rec.submitted = true; rec.pending = false; rec.submittedAt = Date.now(); rec.submittedAs = profLabel();
+    await DB.put(rec);
+    if (!quiet) toast('✅ 선생님께 제출했어요');
+    refreshSubmitUI(); return true;
+  } catch (e) {
+    if (e.hard) { if (!quiet) alert(e.message === 'code' ? '수업 코드가 맞지 않아 제출되지 않았어요. 선생님께 알려 주세요.' : '제출하지 못했어요: ' + e.message); return false; }
+    rec.pending = true; await DB.put(rec);
+    if (!quiet) toast('인터넷이 안 돼서 연결되면 자동으로 다시 보낼게요');
+    refreshSubmitUI(); return false;
+  }
+}
+async function retryPending() {
+  if (!SHEET_URL || !profOk() || !navigator.onLine) return;
+  try { for (const r of await DB.all()) if (r.pending && !r.submitted) await submitRecord(r.id, true); } catch {}
+}
+window.addEventListener('online', retryPending);
+setTimeout(retryPending, 3000);
+
+async function refreshSubmitUI() {
+  const card = $('#submitCard');
+  if (run && !$('#summary').hidden) {
+    if (run.demo) { card.className = 'card submitcard'; $('#submitInfo').textContent = '데모 기록은 제출할 수 없어요.'; $('#bSubmit').disabled = true; $('#bSubmit').textContent = '📤 기록 제출'; }
+    else {
+      const rec = run.recordId && await DB.get(run.recordId);
+      const done = rec && rec.submitted;
+      card.className = 'card submitcard' + (done ? ' done' : '');
+      $('#bSubmit').disabled = !!done;
+      $('#bSubmit').textContent = done ? '✅ 제출 완료' : rec && rec.pending ? '📤 다시 제출 (대기 중)' : '📤 기록 제출';
+      $('#submitInfo').innerHTML = (profOk() ? `제출자: <b>${profLabel()}</b>` : '제출하려면 학생 정보가 필요해요.') +
+        (rec && rec.flags && rec.flags.length ? `<br>⚠️ 선생님 확인 필요: ${rec.flags.join(', ')}` : '');
+    }
+  }
+  if (!$('#history').hidden) renderHistory();
+}
+$('#bSubmit').onclick = () => { if (run && run.recordId) submitRecord(run.recordId); };
+
+/* ===== 📋 내 기록 탭 ===== */
+let hFilter = 'all', hRecs = [], hCur = null;
+$$('#tabs button').forEach(b => b.onclick = () => b.dataset.t === 'history' ? openHistory() : closeHistory());
+$$('#hFilter button').forEach(b => b.onclick = () => { hFilter = b.dataset.v; $$('#hFilter button').forEach(x => x.classList.toggle('on', x === b)); renderHistory(); });
+async function openHistory() {
+  if (drawing) $('#drawDone').click();
+  courseGroup.clearLayers(); $('#courseTag').hidden = true;
+  show('history'); $('#hDetail').hidden = true; $('#hList').hidden = false;
+  await renderHistory();
+}
+function closeHistory() {
+  run = null; finished = false; routeGroup.clearLayers(); hCur = null;
+  show('setup'); renderCourse();
+  if (lastFix) map.setView([lastFix.lat, lastFix.lon], 17);
+}
+// 기록 안에서 특정 거리에 도달한 시간 (경로가 있으면 어느 기록에서든 계산)
+function timeAt(rec, d) {
+  if (rec.goalMs != null && rec.goal === d) return rec.goalMs;
+  const r = rec.route; if (!r || !r.length || rec.dist < d) return null;
+  for (let i = 1; i < r.length; i++) if (r[i][3] >= d) {
+    const f = (d - r[i - 1][3]) / Math.max(1, r[i][3] - r[i - 1][3]);
+    return r[i - 1][2] + (r[i][2] - r[i - 1][2]) * f;
+  }
+  return null;
+}
+async function renderHistory() {
+  try { hRecs = (await DB.all()).sort((a, b) => b.startedAt - a.startedAt); } catch { hRecs = []; }
+  const now0 = new Date(), mon = hRecs.filter(r => { const d = new Date(r.startedAt); return d.getFullYear() === now0.getFullYear() && d.getMonth() === now0.getMonth(); });
+  const tD = mon.reduce((a, r) => a + r.dist, 0), tM = mon.reduce((a, r) => a + r.ms, 0);
+  $('#hMonth').innerHTML = [[`${mon.length}회`, '러닝'], [`${(tD / 1000).toFixed(1)}km`, '총거리'], [tD ? fmtPace(tM / 1000 / (tD / 1000)) : `--'--"`, '평균 페이스'],
+    [mon.length ? Math.round(mon.filter(r => r.goalMs != null).length / mon.length * 100) + '%' : '-', '목표 달성']]
+    .map(([v, l]) => `<div><b class="num">${v}</b><span>${l}</span></div>`).join('');
+  // 최고 기록
+  $('#hPB').innerHTML = [500, 1000, 1500, 2000].map(d => {
+    let best = null;
+    for (const r of hRecs) { const t = timeAt(r, d); if (t != null && (!best || t < best.t)) best = { t, r }; }
+    if (!best) return `<div class="pbrow"><span>${d < 1000 ? d + 'm' : fmtKm(d) + 'km'}</span><span style="color:var(--mut)">기록 없음</span></div>`;
+    const isNew = hRecs[0] && best.r.id === hRecs[0].id;
+    const dd = new Date(best.r.startedAt);
+    return `<div class="pbrow"><span>${d < 1000 ? d + 'm' : fmtKm(d) + 'km'}</span><span><b class="num">${fmtTime(best.t)}</b><small>${dd.getMonth() + 1}/${dd.getDate()}</small>${isNew ? '<span class="new">✨ 새 기록!</span>' : ''}</span></div>`;
+  }).join('');
+  // 페이스 변화 그래프 (최근 10회, 위가 빠름)
+  const last = hRecs.filter(r => r.dist >= 200).slice(0, 10).reverse();
+  if (last.length < 2) { $('#hChart').innerHTML = '<div class="hempty">2회 이상 뛰면 그래프가 나와요</div>'; $('#hTrend').textContent = ''; }
+  else {
+    const ps = last.map(r => r.ms / 1000 / (r.dist / 1000)), mn = Math.min(...ps) - 10, mx = Math.max(...ps) + 10;
+    const W = 320, H = 130, L0 = 40, R0 = 10, T0 = 10, B0 = 22;
+    const X = i => L0 + (W - L0 - R0) * (last.length === 1 ? .5 : i / (last.length - 1)), Y = v => T0 + (H - T0 - B0) * (v - mn) / (mx - mn);
+    let g = '';
+    for (const v of [mn + 10, (mn + mx) / 2, mx - 10]) g += `<line x1="${L0}" x2="${W - R0}" y1="${Y(v)}" y2="${Y(v)}" stroke="#e2e8f0"/><text x="${L0 - 4}" y="${Y(v) + 4}" font-size="10" fill="#64748b" text-anchor="end">${fmtPace(v)}</text>`;
+    const path = ps.map((v, i) => `${i ? 'L' : 'M'}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join('');
+    const dots = ps.map((v, i) => { const d = new Date(last[i].startedAt); return `<circle cx="${X(i)}" cy="${Y(v)}" r="4" fill="#f97316" stroke="#fff" stroke-width="2"/><text x="${X(i)}" y="${H - 6}" font-size="9" fill="#64748b" text-anchor="middle">${d.getMonth() + 1}/${d.getDate()}</text>`; }).join('');
+    $('#hChart').innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="최근 페이스 변화">${g}<path d="${path}" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linejoin="round"/>${dots}</svg>`;
+    const diff = Math.round(ps[0] - ps[ps.length - 1]);
+    $('#hTrend').innerHTML = diff > 0 ? `<span style="color:var(--ok)">처음보다 ${diff}초 빨라졌어요 👏</span>` : diff < 0 ? `<span style="color:var(--mut)">처음보다 ${-diff}초 느려졌어요. 다음엔 할 수 있어요 💪</span>` : '처음과 같은 페이스예요';
+  }
+  // 목록
+  const rows = hRecs.filter(r => hFilter === 'all' || r.goal === +hFilter);
+  const days = '일월화수목금토';
+  $('#hRows').innerHTML = rows.length ? rows.map(r => {
+    const d = new Date(r.startedAt), pace = r.dist > 0 ? r.ms / 1000 / (r.dist / 1000) : Infinity;
+    return `<div class="hrow" data-id="${r.id}"><span class="d">${d.getMonth() + 1}/${d.getDate()}(${days[d.getDay()]})</span>
+      <span class="m num">${(r.dist / 1000).toFixed(2)}km<small>${fmtTime(r.ms)} · ${fmtPace(pace)}</small></span>
+      <span class="i">${r.goalMs != null ? '🏁' : ''}${r.submitted ? '✅' : '📤'}</span></div>`;
+  }).join('') : '<div class="hempty">아직 기록이 없어요. 첫 러닝을 시작해 보세요! 🏃</div>';
+  $$('#hRows .hrow').forEach(el => el.onclick = () => openRecord(el.dataset.id));
+}
+async function openRecord(id) {
+  const rec = await DB.get(id); if (!rec) return;
+  hCur = rec; run = recordToRun(rec); finished = true;
+  $('#hList').hidden = true; $('#hDetail').hidden = false; $('#history').scrollTop = 0;
+  const km = rec.dist / 1000, pace = km > 0 ? rec.ms / 1000 / km : Infinity, goalSec = rec.target * rec.goal / 1000;
+  const d = new Date(rec.startedAt), days = '일월화수목금토';
+  let goalLine = `목표 ${rec.goal < 1000 ? rec.goal + 'm' : fmtKm(rec.goal) + 'km'} ${fmtTime(goalSec * 1000)}`;
+  if (rec.goalMs != null) { const df = Math.round(rec.goalMs / 1000 - goalSec); goalLine = `🏁 ${goalLine} → <b>${fmtTime(rec.goalMs)}</b> (${Math.abs(df) <= 3 ? '딱 맞음' : df < 0 ? -df + '초 빠름' : df + '초 느림'})`; }
+  else goalLine += ' → 미달성';
+  $('#hInfo').innerHTML = `<div style="color:var(--mut);font-weight:700;font-size:13px">${d.getMonth() + 1}/${d.getDate()}(${days[d.getDay()]}) ${two(d.getHours())}:${two(d.getMinutes())}</div>
+    <div class="num" style="font-size:26px;font-weight:800;margin:4px 0">${km.toFixed(2)}km · ${fmtTime(rec.ms)} · ${fmtPace(pace)}</div>
+    <div style="font-size:14px">${goalLine}</div>
+    <div style="font-size:13px;color:var(--mut);margin-top:4px">${rec.submitted ? '✅ 제출 완료' + (rec.submittedAs ? ' (' + rec.submittedAs + ')' : '') : rec.pending ? '📤 제출 대기 중' : '📤 아직 제출 안 함'}${rec.flags && rec.flags.length ? '<br>⚠️ 확인 필요: ' + rec.flags.join(', ') : ''}</div>
+    ${rec.route ? '' : '<div style="font-size:12px;color:var(--mut);margin-top:6px">예전 기록이라 지도 경로가 없어요.</div>'}`;
+  $('#hSubmit').disabled = !!rec.submitted; $('#hSubmit').textContent = rec.submitted ? '✅ 제출됨' : '📤 제출';
+  $('#hPhoto').disabled = $('#hVideo').disabled = !(rec.route && rec.route.length > 1);
+  $('#hSplits').innerHTML = (rec.splits || []).map((s, i) => {
+    const t = rec.tol || 10, cls = Math.abs(s.diff) <= t ? 'ok' : s.diff > 0 ? 'slow' : 'fast';
+    return `<tr><td>${i + 1}${s.partial ? ' (마지막)' : ''}</td><td>${Math.round(s.dist)}m</td><td>${fmtTime(s.ms)}</td><td>${fmtPace(s.pace)}</td><td class="${cls}">${Math.abs(s.diff) <= t ? '👍' : (s.diff > 0 ? '+' : '') + s.diff + '초'}</td></tr>`;
+  }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--mut)">구간 기록이 없어요</td></tr>';
+  drawColoredRoute();
+  if (run.points.length > 1) { follow = false; $('#bCenter').hidden = false; setTimeout(() => map.fitBounds(L.latLngBounds(run.points.map(p => [p[0], p[1]])), { padding: [30, 30] }), 350); }
+}
+$('#hBack').onclick = () => { run = null; hCur = null; routeGroup.clearLayers(); $('#hDetail').hidden = true; $('#hList').hidden = false; renderHistory(); };
+$('#hPhoto').onclick = () => openStudio('photo');
+$('#hVideo').onclick = () => openStudio('video');
+$('#hSubmit').onclick = async () => { if (hCur) { await submitRecord(hCur.id); openRecord(hCur.id); } };
+$('#hDel').onclick = async () => {
+  if (!hCur || !confirm('이 기록을 삭제할까요?\n폰에서만 지워지고, 이미 제출한 기록은 시트에 남아 있어요.')) return;
+  await DB.del(hCur.id); $('#hBack').click();
 };
 
 function toSetup() {
