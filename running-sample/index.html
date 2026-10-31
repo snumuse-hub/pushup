@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>자유학교 러닝</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root{
+  --bg:#f1f5f9; --card:#fff; --ink:#0f172a; --mut:#64748b; --line:#e2e8f0;
+  --acc:#f97316; --blue:#2563eb; --ok:#16a34a; --slow:#dc2626; --fast:#2563eb;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
+  background:var(--bg);color:var(--ink);display:flex;flex-direction:column;
+  height:100dvh;overflow:hidden;-webkit-tap-highlight-color:transparent;
+}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.num{font-variant-numeric:tabular-nums}
+
+/* 지도 */
+#mapWrap{position:relative;z-index:0;flex:1 1 auto;min-height:160px}
+#map{position:absolute;inset:0;background:#dbe3ea}
+.mapbtns{position:absolute;z-index:1000;top:calc(10px + env(safe-area-inset-top));right:10px;display:flex;flex-direction:column;gap:8px}
+.mapbtn{background:#fff;border-radius:12px;padding:8px 12px;font-size:14px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.mapbtn[hidden]{display:none}
+.gpsbadge{position:absolute;z-index:1000;top:calc(10px + env(safe-area-inset-top));left:10px;background:#fff;border-radius:12px;padding:7px 11px;font-size:13px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.gpsbadge.good{color:var(--ok)} .gpsbadge.mid{color:#ca8a04} .gpsbadge.bad{color:var(--slow)}
+
+/* 아래 패널 */
+.panel{
+  position:relative;z-index:1;flex:0 0 auto;background:var(--card);
+  border-radius:22px 22px 0 0;margin-top:-18px;
+  padding:18px 16px calc(16px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 24px rgba(15,23,42,.10);max-height:72dvh;overflow:auto;
+}
+.panel[hidden]{display:none}
+h1{font-size:20px;margin-bottom:12px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.row:last-of-type{border-bottom:0}
+.row label{font-weight:600;font-size:15px}
+.row .hint{display:block;color:var(--mut);font-size:12px;font-weight:400;margin-top:2px}
+.stepper{display:flex;align-items:center;gap:6px}
+.stepper button{width:40px;height:40px;border-radius:12px;background:var(--bg);font-size:22px;font-weight:700}
+.stepper b{min-width:64px;text-align:center;font-size:22px}
+.seg{display:flex;background:var(--bg);border-radius:12px;padding:3px}
+.seg button{padding:8px 11px;border-radius:9px;font-size:14px;font-weight:600;color:var(--mut)}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.big{width:100%;margin-top:14px;padding:17px;border-radius:16px;background:var(--acc);color:#fff;font-size:19px;font-weight:800}
+.big:disabled{opacity:.5}
+.link{display:block;margin:12px auto 0;color:var(--mut);font-size:14px;text-decoration:underline}
+.notice{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5;margin-bottom:10px}
+.notice[hidden]{display:none}
+.resume{background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:12px;margin-bottom:12px}
+.resume[hidden]{display:none}
+.resume p{font-size:14px;margin-bottom:8px}
+.resume .btns{display:flex;gap:8px}
+.resume button{flex:1;padding:10px;border-radius:10px;font-weight:700;background:var(--blue);color:#fff}
+.resume button.ghost{background:#fff;color:var(--mut);border:1px solid var(--line)}
+
+/* 러닝 화면 */
+.bigdist{text-align:center;line-height:1}
+.bigdist b{font-size:64px;font-weight:800;letter-spacing:-2px}
+.bigdist small{font-size:20px;color:var(--mut);margin-left:4px;font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.grid div{background:var(--bg);border-radius:14px;padding:10px 12px}
+.grid label{display:block;font-size:12px;color:var(--mut);font-weight:600}
+.grid b{font-size:26px;font-weight:800}
+.grid small{font-size:13px;color:var(--mut);margin-left:3px}
+.target{margin-top:10px;border-radius:12px;padding:10px 12px;font-size:14px;font-weight:700;text-align:center;background:var(--bg)}
+.target.ok{background:#dcfce7;color:#166534}
+.target.slow{background:#fee2e2;color:#991b1b}
+.target.fast{background:#dbeafe;color:#1e40af}
+.actions{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:8px;margin-top:12px}
+.actions button{padding:15px 8px;border-radius:14px;font-weight:800;font-size:16px;background:var(--bg)}
+.actions .primary{background:var(--ink);color:#fff}
+.actions .primary.paused{background:var(--ok)}
+.actions .danger{background:#fee2e2;color:var(--slow)}
+
+/* 결과 화면 */
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
+th,td{padding:8px 4px;text-align:right;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--mut);font-size:12px;font-weight:600}
+td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight:700} td.ok{color:var(--ok);font-weight:700}
+
+/* 잠금 화면 */
+#lock{position:fixed;inset:0;z-index:3000;background:rgba(15,23,42,.96);color:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+  user-select:none;-webkit-user-select:none;touch-action:none}
+#lock[hidden]{display:none}
+#lock .l-dist{font-size:84px;font-weight:800;letter-spacing:-3px;line-height:1}
+#lock .l-dist small{font-size:24px;color:#94a3b8;margin-left:6px}
+#lock .l-row{display:flex;gap:28px;text-align:center}
+#lock .l-row label{display:block;font-size:13px;color:#94a3b8}
+#lock .l-row b{font-size:32px;font-weight:800}
+#hold{margin-top:30px;position:relative;overflow:hidden;width:240px;padding:18px;border-radius:999px;
+  background:rgba(255,255,255,.12);font-weight:700;font-size:16px;color:#fff}
+#hold i{position:absolute;inset:0;width:0;background:rgba(249,115,22,.7);z-index:-1}
+#hold.holding i{width:100%;transition:width 1.2s linear}
+</style>
+</head>
+<body>
+
+<div id="mapWrap">
+  <div id="map"></div>
+  <div id="gpsBadge" class="gpsbadge bad">📡 GPS 찾는 중…</div>
+  <div class="mapbtns">
+    <button id="bLayer" class="mapbtn">🛰 위성</button>
+    <button id="bCenter" class="mapbtn" hidden>📍 내 위치</button>
+  </div>
+</div>
+
+<!-- 1) 준비 화면 -->
+<section id="setup" class="panel">
+  <div id="resumeBox" class="resume" hidden>
+    <p>⏱ 진행 중이던 러닝이 있어요. <b id="resumeInfo"></b></p>
+    <div class="btns"><button id="bResume">이어서 달리기</button><button id="bDiscard" class="ghost">새로 시작</button></div>
+  </div>
+  <div id="gpsErr" class="notice" hidden></div>
+  <div id="wlNotice" class="notice" hidden>이 브라우저는 화면 꺼짐 방지를 지원하지 않아요. 달리는 동안 화면이 꺼지지 않도록 <b>휴대폰 설정에서 자동 잠금을 잠시 꺼 주세요.</b></div>
+
+  <h1>🏃 오늘의 러닝</h1>
+  <div class="row">
+    <label>목표 페이스<span class="hint">1km를 달리는 시간</span></label>
+    <div class="stepper"><button id="tMinus">−</button><b id="tVal" class="num">6'30"</b><button id="tPlus">+</button></div>
+  </div>
+  <div class="row">
+    <label>음성 알림 간격</label>
+    <div class="seg" id="segInt">
+      <button data-v="200">200m</button><button data-v="400">400m</button><button data-v="500">500m</button><button data-v="1000">1km</button>
+    </div>
+  </div>
+  <button id="bStart" class="big">출발하기</button>
+  <button id="bDemo" class="link">밖에 나가지 않고 데모로 체험하기 (10배속)</button>
+</section>
+
+<!-- 2) 러닝 화면 -->
+<section id="runPanel" class="panel" hidden>
+  <div class="bigdist num"><b id="vDist">0.00</b><small>km</small></div>
+  <div class="grid">
+    <div><label>운동시간</label><b id="vTime" class="num">00:00</b></div>
+    <div><label>현재 페이스</label><b id="vPace" class="num">--'--"</b></div>
+    <div><label>평균 페이스</label><b id="vAvg" class="num">--'--"</b></div>
+    <div><label>속도</label><b id="vSpeed" class="num">0.0</b><small>km/h</small></div>
+  </div>
+  <div id="vTarget" class="target">목표 페이스 6'30"</div>
+  <div class="actions">
+    <button id="bLock">🔒 잠금</button>
+    <button id="bPause" class="primary">⏸ 일시정지</button>
+    <button id="bEnd" class="danger">종료</button>
+  </div>
+</section>
+
+<!-- 3) 결과 화면 -->
+<section id="summary" class="panel" hidden>
+  <h1>🎉 수고했어요!</h1>
+  <div class="grid">
+    <div><label>거리</label><b id="sDist" class="num"></b><small>km</small></div>
+    <div><label>운동시간</label><b id="sTime" class="num"></b></div>
+    <div><label>평균 페이스</label><b id="sPace" class="num"></b></div>
+    <div><label>평균 속도</label><b id="sSpeed" class="num"></b><small>km/h</small></div>
+  </div>
+  <table>
+    <thead><tr><th>구간</th><th>거리</th><th>구간 시간</th><th>페이스</th><th>목표 대비</th></tr></thead>
+    <tbody id="sSplits"></tbody>
+  </table>
+  <button id="bAgain" class="big">처음으로</button>
+</section>
+
+<!-- 잠금 화면 (주머니 속 오작동 방지) -->
+<div id="lock" hidden>
+  <div class="l-dist num"><span id="lDist">0.00</span><small>km</small></div>
+  <div class="l-row">
+    <div><label>시간</label><b id="lTime" class="num">00:00</b></div>
+    <div><label>현재 페이스</label><b id="lPace" class="num">--'--"</b></div>
+  </div>
+  <button id="hold"><i></i>길게 눌러서 잠금 해제</button>
+</div>
+
+<script>
+/* ===== 설정 =====
+ * 브이월드(국토교통부) 키를 넣으면 국내 상세 지도/항공사진을 씁니다. (무료, vworld.kr 에서 발급)
+ * 비워두면 OpenStreetMap(일반) + Esri(위성)를 사용합니다.
+ */
+const VWORLD_KEY = '';
+const MAX_ACCURACY = 30;   // 이보다 오차가 큰 GPS 신호는 버림 (m)
+const MAX_SPEED = 9;       // 이보다 빠르면 GPS 튐으로 판단 (m/s)
+const MIN_STEP = 3;        // 이보다 짧은 이동은 제자리 떨림으로 무시 (m)
+
+/* ===== 유틸 ===== */
+const $ = s => document.querySelector(s);
+const load = k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
+const store = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+const unstore = k => { try { localStorage.removeItem(k); } catch {} };
+
+let demo = null;                                   // 데모 모드면 가상 시계 사용
+const now = () => demo ? demo.t : Date.now();
+
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371000, r = x => x * Math.PI / 180;
+  const h = Math.sin(r(lat2 - lat1) / 2) ** 2 +
+    Math.cos(r(lat1)) * Math.cos(r(lat2)) * Math.sin(r(lon2 - lon1) / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+function fmtTime(ms) {
+  const s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), ss = s % 60;
+  const p = n => String(n).padStart(2, '0');
+  return h ? `${h}:${p(m)}:${p(ss)}` : `${p(m)}:${p(ss)}`;
+}
+function fmtPace(sec) {
+  if (!isFinite(sec) || sec <= 0 || sec > 1200) return `--'--"`;
+  const s = Math.round(sec);
+  return `${Math.floor(s / 60)}'${String(s % 60).padStart(2, '0')}"`;
+}
+const sayPace = sec => { const s = Math.round(sec); return `${Math.floor(s / 60)}분 ${s % 60}초`; };
+const sayDist = m => m < 1000 ? `${Math.round(m)}미터`
+  : (m % 1000 === 0 ? `${m / 1000}킬로미터` : `${(m / 1000).toFixed(1)}킬로미터`);
+
+/* ===== 음성 ===== */
+let koVoice = null;
+function pickVoice() { koVoice = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith('ko')) || null; }
+if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+function say(text) {
+  if (!('speechSynthesis' in window)) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ko-KR'; u.rate = 1.05; if (koVoice) u.voice = koVoice;
+  speechSynthesis.speak(u);
+}
+
+/* ===== 화면 꺼짐 방지 ===== */
+let wakeLock = null;
+async function keepScreenOn() {
+  if (!('wakeLock' in navigator)) return;
+  try { wakeLock = await navigator.wakeLock.request('screen'); } catch {}
+}
+function releaseScreen() { try { wakeLock && wakeLock.release(); } catch {} wakeLock = null; }
+if (!('wakeLock' in navigator)) $('#wlNotice').hidden = false;
+
+/* ===== 지도 ===== */
+const map = L.map('map', { zoomControl: false }).setView([37.5665, 126.978], 16);
+const layers = VWORLD_KEY ? {
+  map: L.tileLayer(`https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Base/{z}/{y}/{x}.png`,
+    { maxZoom: 19, attribution: '© VWorld' }),
+  sat: L.layerGroup([
+    L.tileLayer(`https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Satellite/{z}/{y}/{x}.jpeg`, { maxZoom: 19, attribution: '© VWorld' }),
+    L.tileLayer(`https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Hybrid/{z}/{y}/{x}.png`, { maxZoom: 19 })
+  ])
+} : {
+  map: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    { maxZoom: 19, attribution: '© OpenStreetMap' }),
+  sat: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    { maxZoom: 19, maxNativeZoom: 18, attribution: 'Esri, Maxar' })
+};
+const prefs = Object.assign({ target: 390, interval: 400, layer: 'sat' }, load('runPrefs'));
+let curLayer = null;
+function setLayer(name) {
+  if (curLayer) map.removeLayer(curLayer);
+  curLayer = layers[name].addTo(map);
+  prefs.layer = name; store('runPrefs', prefs);
+  $('#bLayer').textContent = name === 'sat' ? '🗺 일반' : '🛰 위성';
+}
+setLayer(prefs.layer);
+$('#bLayer').onclick = () => setLayer(prefs.layer === 'sat' ? 'map' : 'sat');
+
+const accCircle = L.circle([0, 0], { radius: 1, weight: 1, color: '#2563eb', fillOpacity: .12, interactive: false });
+const meDot = L.circleMarker([0, 0], { radius: 8, color: '#fff', weight: 3, fillColor: '#2563eb', fillOpacity: 1 });
+const routeGroup = L.layerGroup().addTo(map);
+let routeLines = {};      // 구간(seg)별 경로선
+let follow = true;
+map.on('dragstart', () => { follow = false; $('#bCenter').hidden = false; });
+$('#bCenter').onclick = () => {
+  follow = true; $('#bCenter').hidden = true;
+  if (lastFix) map.setView([lastFix.lat, lastFix.lon], Math.max(map.getZoom(), 17));
+};
+function lineFor(seg) {
+  return routeLines[seg] ||= L.polyline([], { color: '#f97316', weight: 6, opacity: .95, lineCap: 'round' }).addTo(routeGroup);
+}
+function redrawRoute() {
+  routeGroup.clearLayers(); routeLines = {};
+  if (!run || !run.points.length) return;
+  for (const p of run.points) lineFor(p[4]).addLatLng([p[0], p[1]]);
+  const f = run.points[0];
+  L.circleMarker([f[0], f[1]], { radius: 7, color: '#fff', weight: 2, fillColor: '#16a34a', fillOpacity: 1 })
+    .bindTooltip('출발').addTo(routeGroup);
+}
+
+/* ===== 러닝 상태 =====
+ * points: [위도, 경도, 누적운동시간ms, 누적거리m, 구간번호]
+ */
+let run = null;
+let lastFix = null;
+let rejects = 0;
+
+const moving = () => !run ? 0 : run.movingMs + (run.activeSince != null ? now() - run.activeSince : 0);
+
+function newRun(isDemo) {
+  return {
+    demo: isDemo, startedAt: now(), movingMs: 0, activeSince: now(),
+    dist: 0, points: [], seg: 0,
+    target: prefs.target, interval: prefs.interval,
+    nextAlert: prefs.interval, lastSplitMs: 0, lastSplitDist: 0, splits: []
+  };
+}
+
+/* ===== GPS ===== */
+function onFix(lat, lon, acc) {
+  lastFix = { lat, lon, acc };
+  const ll = [lat, lon];
+  if (!meDot._map) { meDot.addTo(map); accCircle.addTo(map); map.setView(ll, 17); }
+  meDot.setLatLng(ll); accCircle.setLatLng(ll).setRadius(acc);
+  if (follow) map.panTo(ll, { animate: true });
+
+  const b = $('#gpsBadge');
+  b.textContent = `📡 GPS ±${Math.round(acc)}m`;
+  b.className = 'gpsbadge ' + (acc <= 15 ? 'good' : acc <= MAX_ACCURACY ? 'mid' : 'bad');
+
+  if (run && run.activeSince != null) addPoint(lat, lon, acc);
+}
+
+function addPoint(lat, lon, acc) {
+  if (acc > MAX_ACCURACY) return;
+  const mt = moving();
+  const last = run.points[run.points.length - 1];
+  if (last && last[4] === run.seg) {
+    const d = haversine(last[0], last[1], lat, lon);
+    const dt = Math.max((mt - last[2]) / 1000, 1);
+    if (d < MIN_STEP) return;                                   // 제자리 떨림
+    if (d / dt > MAX_SPEED && ++rejects < 5) return;            // 순간이동(GPS 튐)
+    if (d / dt <= MAX_SPEED) run.dist += d;                     // 화면이 잠깐 꺼졌던 구간도 직선거리로 이어줌
+    rejects = 0;
+  }
+  run.points.push([+lat.toFixed(6), +lon.toFixed(6), mt, run.dist, run.seg]);
+  if (run.points.length === 1) redrawRoute(); else lineFor(run.seg).addLatLng([lat, lon]);
+  checkAlert();
+  saveSoon();
+}
+
+let watchId = null;
+function startGps() {
+  if (!('geolocation' in navigator)) { showGpsErr('이 브라우저는 위치 기능을 지원하지 않아요.'); return; }
+  if (watchId != null) return;
+  watchId = navigator.geolocation.watchPosition(
+    p => { if (!demo) { $('#gpsErr').hidden = true; onFix(p.coords.latitude, p.coords.longitude, p.coords.accuracy); } },
+    e => showGpsErr(e.code === 1
+      ? '위치 권한이 꺼져 있어요. 브라우저 주소창의 🔒 버튼 → 위치 → <b>허용</b>으로 바꿔 주세요.'
+      : 'GPS 신호를 찾고 있어요. 하늘이 잘 보이는 곳으로 나가 주세요.'),
+    { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 });
+}
+function showGpsErr(html) { const n = $('#gpsErr'); n.innerHTML = html; n.hidden = false; }
+
+/* ===== 페이스 계산 ===== */
+function recentSpeed() {             // 최근 20초 구간 속도 (m/s)
+  const pts = run.points, mt = moving();
+  if (!pts.length) return 0;
+  const last = pts[pts.length - 1];
+  if (mt - last[2] > 10000) return 0;               // 10초 이상 이동 없음 → 멈춤
+  let i = pts.length - 1;
+  while (i > 0 && pts[i - 1][4] === last[4] && last[2] - pts[i - 1][2] <= 20000) i--;
+  const dt = (last[2] - pts[i][2]) / 1000;
+  return dt >= 5 ? (last[3] - pts[i][3]) / dt : 0;
+}
+
+/* ===== 목표 페이스 음성 알림 ===== */
+function checkAlert() {
+  while (run.dist >= run.nextAlert) {
+    const mt = moving();
+    const splitMs = mt - run.lastSplitMs;
+    const splitDist = run.dist - run.lastSplitDist;
+    const pace = (splitMs / 1000) / (splitDist / 1000);
+    const diff = Math.round(pace - run.target);
+    run.splits.push({ at: run.nextAlert, dist: splitDist, ms: splitMs, pace, diff });
+
+    let msg = `${sayDist(run.nextAlert)}. 구간 페이스 ${sayPace(pace)}. `;
+    if (Math.abs(diff) <= 5) msg += '목표 페이스 딱 좋아요!';
+    else if (diff > 0) msg += `목표보다 ${diff}초 느려요. 조금만 더 힘내요!`;
+    else msg += `목표보다 ${-diff}초 빨라요. 페이스 조절하세요!`;
+    say(msg);
+    navigator.vibrate?.(diff > 5 ? [300, 120, 300] : [150]);
+
+    run.lastSplitMs = mt; run.lastSplitDist = run.dist;
+    run.nextAlert += run.interval;
+  }
+}
+
+/* ===== 저장 (새로고침/실수로 닫아도 이어가기) ===== */
+let saveTimer = null;
+function save() { if (run && !run.demo) store('runActive', Object.assign({}, run, { savedAt: Date.now() })); }
+function saveSoon() { if (!saveTimer) saveTimer = setTimeout(() => { saveTimer = null; save(); }, 3000); }
+document.addEventListener('visibilitychange', () => {
+  if (!run) return;
+  if (document.visibilityState === 'hidden') save();
+  else if (run.activeSince != null) keepScreenOn();   // 다른 앱 갔다 오면 다시 화면 유지
+});
+
+/* ===== 화면 전환 ===== */
+function show(id) {
+  for (const s of ['setup', 'runPanel', 'summary']) $('#' + s).hidden = s !== id;
+  setTimeout(() => map.invalidateSize(), 50);
+}
+
+/* ===== 준비 화면 ===== */
+function renderPrefs() {
+  $('#tVal').textContent = fmtPace(prefs.target);
+  document.querySelectorAll('#segInt button').forEach(b => b.classList.toggle('on', +b.dataset.v === prefs.interval));
+  store('runPrefs', prefs);
+}
+$('#tMinus').onclick = () => { prefs.target = Math.max(180, prefs.target - 5); renderPrefs(); };
+$('#tPlus').onclick = () => { prefs.target = Math.min(720, prefs.target + 5); renderPrefs(); };
+document.querySelectorAll('#segInt button').forEach(b => b.onclick = () => { prefs.interval = +b.dataset.v; renderPrefs(); });
+renderPrefs();
+
+function beginTracking() {
+  keepScreenOn();
+  show('runPanel');
+  follow = true; $('#bCenter').hidden = true;
+  updatePauseBtn();
+}
+
+$('#bStart').onclick = () => {
+  if (!lastFix && !confirm('아직 GPS 신호가 잡히지 않았어요. 그래도 출발할까요?')) return;
+  run = newRun(false); rejects = 0;
+  redrawRoute();
+  say(`러닝을 시작합니다. 목표 페이스 ${sayPace(run.target)}. 화이팅!`);  // iOS: 버튼 누를 때 음성 활성화
+  if (lastFix) addPoint(lastFix.lat, lastFix.lon, lastFix.acc);
+  beginTracking(); save();
+};
+
+/* ===== 데모 (400m 트랙을 가상으로 달림, 10배속) ===== */
+function trackPos(c, s) {
+  const L = 84.39, r = (400 - 2 * L) / (2 * Math.PI);
+  s = ((s % 400) + 400) % 400;
+  let x, y;
+  if (s < L) { x = -L / 2 + s; y = -r; }
+  else if (s < L + Math.PI * r) { const a = -Math.PI / 2 + (s - L) / r; x = L / 2 + r * Math.cos(a); y = r * Math.sin(a); }
+  else if (s < 2 * L + Math.PI * r) { x = L / 2 - (s - L - Math.PI * r); y = r; }
+  else { const a = Math.PI / 2 + (s - 2 * L - Math.PI * r) / r; x = -L / 2 + r * Math.cos(a); y = r * Math.sin(a); }
+  return [c[0] + y / 111320, c[1] + x / (111320 * Math.cos(c[0] * Math.PI / 180))];
+}
+$('#bDemo').onclick = () => {
+  const c = lastFix ? [lastFix.lat, lastFix.lon] : [map.getCenter().lat, map.getCenter().lng];
+  demo = { t: Date.now(), s: 0, c };
+  run = newRun(true); rejects = 0; redrawRoute();
+  say(`데모 러닝을 시작합니다. 목표 페이스 ${sayPace(run.target)}.`);
+  beginTracking();
+  map.setView(trackPos(c, 0), 17);
+  demo.timer = setInterval(() => {
+    if (!run) return;
+    demo.t += 1000;
+    if (run.activeSince == null) return;
+    demo.s += 2.55 + 0.35 * Math.sin(demo.t / 50000) + (Math.random() - .5) * .3;  // 약 6분~7분 페이스
+    const [lat, lon] = trackPos(c, demo.s);
+    onFix(lat + (Math.random() - .5) * 1.5e-5, lon + (Math.random() - .5) * 1.5e-5, 5);
+  }, 100);
+};
+function stopDemo() { if (demo) { clearInterval(demo.timer); demo = null; } }
+
+/* ===== 러닝 화면 ===== */
+function render() {
+  if (!run || $('#runPanel').hidden) return;
+  const mt = moving();
+  const km = run.dist / 1000;
+  const sp = recentSpeed();
+  const curPace = sp > 0.5 ? 1000 / sp : Infinity;
+  const avgPace = run.dist > 50 ? (mt / 1000) / km : Infinity;
+
+  $('#vDist').textContent = $('#lDist').textContent = km.toFixed(2);
+  $('#vTime').textContent = $('#lTime').textContent = fmtTime(mt);
+  $('#vPace').textContent = $('#lPace').textContent = fmtPace(curPace);
+  $('#vAvg').textContent = fmtPace(avgPace);
+  $('#vSpeed').textContent = (sp * 3.6).toFixed(1);
+
+  const t = $('#vTarget');
+  const left = Math.max(0, Math.round(run.nextAlert - run.dist));
+  if (run.activeSince == null) { t.className = 'target'; t.textContent = '⏸ 일시정지 중'; }
+  else if (!isFinite(curPace)) { t.className = 'target'; t.textContent = `목표 ${fmtPace(run.target)} · 다음 알림까지 ${left}m`; }
+  else {
+    const d = Math.round(curPace - run.target);
+    t.className = 'target ' + (Math.abs(d) <= 5 ? 'ok' : d > 0 ? 'slow' : 'fast');
+    t.textContent = (Math.abs(d) <= 5 ? '👍 목표 페이스 유지 중' : d > 0 ? `🐢 목표보다 ${d}초 느림` : `🐇 목표보다 ${-d}초 빠름`)
+      + ` · 알림까지 ${left}m`;
+  }
+}
+setInterval(render, 250);
+
+function updatePauseBtn() {
+  const b = $('#bPause'), paused = run && run.activeSince == null;
+  b.textContent = paused ? '▶ 다시 달리기' : '⏸ 일시정지';
+  b.classList.toggle('paused', paused);
+}
+$('#bPause').onclick = () => {
+  if (run.activeSince != null) {
+    run.movingMs += now() - run.activeSince; run.activeSince = null;
+    say('일시정지');
+  } else {
+    run.activeSince = now(); run.seg++;   // 쉬는 동안 걸은 거리는 넣지 않도록 새 구간 시작
+    say('다시 출발!');
+    if (lastFix && !run.demo) addPoint(lastFix.lat, lastFix.lon, lastFix.acc);
+  }
+  updatePauseBtn(); render(); save();
+};
+
+/* 잠금: 1.2초 길게 눌러야 풀림 */
+$('#bLock').onclick = () => { $('#lock').hidden = false; };
+let holdTimer = null;
+const hold = $('#hold');
+hold.addEventListener('pointerdown', e => {
+  e.preventDefault(); hold.classList.add('holding');
+  holdTimer = setTimeout(() => { $('#lock').hidden = true; hold.classList.remove('holding'); }, 1200);
+});
+['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => hold.addEventListener(ev, () => {
+  clearTimeout(holdTimer); hold.classList.remove('holding');
+}));
+$('#lock').addEventListener('contextmenu', e => e.preventDefault());
+
+/* ===== 종료 & 결과 ===== */
+$('#bEnd').onclick = () => {
+  if (!confirm('러닝을 끝낼까요?')) return;
+  if (run.activeSince != null) { run.movingMs += now() - run.activeSince; run.activeSince = null; }
+  // 마지막 남은 구간도 기록
+  const restDist = run.dist - run.lastSplitDist;
+  if (restDist >= 50) {
+    const ms = run.movingMs - run.lastSplitMs, pace = (ms / 1000) / (restDist / 1000);
+    run.splits.push({ at: run.dist, dist: restDist, ms, pace, diff: Math.round(pace - run.target), partial: true });
+  }
+  stopDemo(); releaseScreen();
+  const km = run.dist / 1000, avg = km > 0 ? (run.movingMs / 1000) / km : Infinity;
+  say(`수고했어요! 총 ${sayDist(Math.round(run.dist))}, ${fmtTime(run.movingMs).replace(':', '분 ')}초, 평균 페이스 ${isFinite(avg) ? sayPace(avg) : '기록 없음'}.`);
+
+  if (!run.demo) {
+    const hist = load('runHistory') || [];
+    hist.unshift({ date: run.startedAt, dist: run.dist, ms: run.movingMs, target: run.target, splits: run.splits });
+    store('runHistory', hist.slice(0, 30));
+  }
+  unstore('runActive');
+  showSummary();
+};
+
+function showSummary() {
+  const km = run.dist / 1000;
+  $('#sDist').textContent = km.toFixed(2);
+  $('#sTime').textContent = fmtTime(run.movingMs);
+  $('#sPace').textContent = fmtPace(km > 0 ? (run.movingMs / 1000) / km : Infinity);
+  $('#sSpeed').textContent = run.movingMs ? (run.dist / (run.movingMs / 1000) * 3.6).toFixed(1) : '0.0';
+  $('#sSplits').innerHTML = run.splits.map((s, i) => {
+    const cls = Math.abs(s.diff) <= 5 ? 'ok' : s.diff > 0 ? 'slow' : 'fast';
+    const dtxt = Math.abs(s.diff) <= 5 ? '👍' : (s.diff > 0 ? `+${s.diff}초` : `${s.diff}초`);
+    return `<tr><td>${i + 1}${s.partial ? ' (마지막)' : ''}</td><td>${Math.round(s.dist)}m</td>
+      <td>${fmtTime(s.ms)}</td><td>${fmtPace(s.pace)}</td><td class="${cls}">${dtxt}</td></tr>`;
+  }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--mut)">구간 기록이 없어요</td></tr>';
+  show('summary');
+  const pts = run.points.map(p => [p[0], p[1]]);
+  if (pts.length > 1) setTimeout(() => { follow = false; map.fitBounds(L.latLngBounds(pts), { padding: [30, 30] }); }, 100);
+}
+
+$('#bAgain').onclick = () => {
+  run = null; routeGroup.clearLayers(); routeLines = {};
+  follow = true; $('#bCenter').hidden = true;
+  if (lastFix) map.setView([lastFix.lat, lastFix.lon], 17);
+  show('setup');
+};
+
+/* ===== 진행 중이던 러닝 복구 ===== */
+const saved = load('runActive');
+if (saved && Date.now() - saved.savedAt < 3 * 3600 * 1000) {
+  $('#resumeBox').hidden = false;
+  const mt = saved.movingMs + (saved.activeSince != null ? Date.now() - saved.activeSince : 0);
+  $('#resumeInfo').textContent = `${(saved.dist / 1000).toFixed(2)}km · ${fmtTime(mt)}`;
+  $('#bResume').onclick = () => {
+    run = saved; delete run.savedAt;
+    redrawRoute(); $('#resumeBox').hidden = true;
+    say('러닝을 이어갑니다.');
+    beginTracking();
+  };
+  $('#bDiscard').onclick = () => { unstore('runActive'); $('#resumeBox').hidden = true; };
+} else if (saved) unstore('runActive');
+
+startGps();
+</script>
+</body>
+</html>
