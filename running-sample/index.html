@@ -23,22 +23,44 @@ button,input{font:inherit;color:inherit}
 button{border:0;background:none;cursor:pointer}
 .num{font-variant-numeric:tabular-nums}
 
-/* 지도 */
-#mapWrap{position:relative;z-index:0;flex:1 1 auto;min-height:150px}
+/* 화면 배치: 머리글 / 지도 카드 / 설정 카드 */
+#appHead{flex:0 0 auto;display:flex;align-items:baseline;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 16px 8px}
+#appHead b{font-size:18px;font-weight:800}
+#appHead span{font-size:13px;color:var(--mut);font-weight:600}
+#mapWrap{position:relative;z-index:0;flex:0 0 auto;height:36dvh;min-height:200px;margin:0 12px;border-radius:18px;overflow:hidden;box-shadow:0 2px 10px rgba(15,23,42,.12);background:#dbe3ea;transition:height .25s}
+body.scr-run #mapWrap{height:40dvh}
+body.scr-summary #mapWrap{height:38dvh}
 #map{position:absolute;inset:0;background:#dbe3ea}
-.mapbtns{position:absolute;z-index:1000;top:calc(10px + env(safe-area-inset-top));right:10px;display:flex;flex-direction:column;gap:8px}
+.mapbtns{position:absolute;z-index:1000;top:10px;right:10px;display:flex;flex-direction:column;gap:8px}
 .mapbtn{background:#fff;border-radius:12px;padding:8px 12px;font-size:14px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 .mapbtn[hidden]{display:none}
-.gpsbadge{position:absolute;z-index:1000;top:calc(10px + env(safe-area-inset-top));left:10px;background:#fff;border-radius:12px;padding:7px 11px;font-size:13px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.gpsbadge{position:absolute;z-index:1000;top:10px;left:10px;background:#fff;border-radius:12px;padding:7px 11px;font-size:13px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 .gpsbadge.good{color:var(--ok)} .gpsbadge.mid{color:#ca8a04} .gpsbadge.bad{color:var(--slow)}
+.drawbar{position:absolute;z-index:1000;left:10px;right:10px;bottom:10px;background:#fff;border-radius:14px;padding:8px;display:flex;align-items:center;gap:6px;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.drawbar[hidden]{display:none}
+.drawbar span{flex:1;font-size:13px;font-weight:700;padding-left:4px}
+.drawbar button{padding:8px 10px;border-radius:10px;background:var(--bg);font-weight:700;font-size:13px}
+.drawbar button.on{background:var(--ink);color:#fff}
+.coursetag{position:absolute;z-index:1000;left:10px;bottom:24px;background:rgba(255,255,255,.95);border-radius:12px;padding:6px 10px;font-size:12px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.coursetag[hidden]{display:none}
+.coursetag .over{color:var(--acc)}
+.course-label{background:none;border:0}
+.course-label div{position:absolute;left:0;top:0;width:max-content;transform:translate(-50%,-150%);white-space:nowrap;background:#fff;border-radius:8px;padding:3px 7px;font-size:12px;font-weight:800;box-shadow:0 1px 5px rgba(0,0,0,.25)}
+.course-label.over div{background:var(--acc);color:#fff}
 
-/* 패널 */
-.panel{
-  position:relative;z-index:1;flex:0 0 auto;background:var(--card);
-  border-radius:22px 22px 0 0;margin-top:-18px;
-  padding:18px 16px calc(16px + env(safe-area-inset-bottom));
-  box-shadow:0 -6px 24px rgba(15,23,42,.10);max-height:74dvh;overflow:auto;overscroll-behavior:contain;
-}
+/* 아래 영역 */
+.panel{flex:1 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain;padding:12px 12px calc(12px + env(safe-area-inset-bottom))}
+.card{background:var(--card);border-radius:18px;padding:12px 14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+.card h3{margin:2px 0 4px;font-size:14px;color:var(--ink)}
+.card h3 small{font-size:12px;color:var(--mut);font-weight:600;margin-left:4px}
+.startbar{position:sticky;bottom:calc(-12px - env(safe-area-inset-bottom));margin:0 -12px -12px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(rgba(241,245,249,0),var(--bg) 22%)}
+.startbar .big{margin-top:0;box-shadow:0 4px 14px rgba(249,115,22,.35)}
+.coursebtns{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-top:6px}
+.coursebtns button{padding:11px 8px;border-radius:12px;background:var(--ink);color:#fff;font-weight:800;font-size:14px}
+.coursebtns button+button{background:var(--blue)}
+.coursebtns button.ghost{background:var(--bg);color:var(--mut)}
+.courseinfo{margin-top:8px;font-size:13px;color:var(--mut);line-height:1.5}
+.courseinfo b{color:var(--ink)} .courseinfo .over{color:var(--acc);font-weight:800}
 /* 복구 확인 창 */
 #modal{position:fixed;inset:0;z-index:4000;background:rgba(15,23,42,.6);display:flex;align-items:center;justify-content:center;padding:16px}
 #modal[hidden]{display:none}
@@ -60,6 +82,9 @@ h3{font-size:13px;color:var(--mut);font-weight:700;margin:16px 0 6px;letter-spac
 .row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
 .row:last-child{border-bottom:0}
 .row>label{font-weight:600;font-size:15px;flex:0 0 auto}
+.row.stack{flex-direction:column;align-items:stretch;gap:6px}
+.row.stack .seg{flex-wrap:nowrap}
+.row.stack .seg button{flex:1;padding:8px 4px}
 .row .hint{display:block;color:var(--mut);font-size:12px;font-weight:400;margin-top:1px}
 .seg{display:flex;flex-wrap:wrap;background:var(--bg);border-radius:12px;padding:3px;gap:2px}
 .seg button{padding:7px 10px;border-radius:9px;font-size:14px;font-weight:600;color:var(--mut)}
@@ -87,7 +112,7 @@ h3{font-size:13px;color:var(--mut);font-weight:700;margin:16px 0 6px;letter-spac
 
 /* 러닝 화면 */
 .bigdist{text-align:center;line-height:1}
-.bigdist b{font-size:60px;font-weight:800;letter-spacing:-2px}
+.bigdist b{font-size:54px;font-weight:800;letter-spacing:-2px}
 .bigdist small{font-size:20px;color:var(--mut);margin-left:4px;font-weight:700}
 .goal{margin-top:10px}
 .goalbar{height:10px;background:var(--bg);border-radius:99px;overflow:hidden}
@@ -104,8 +129,8 @@ h3{font-size:13px;color:var(--mut);font-weight:700;margin:16px 0 6px;letter-spac
 .target.ok{background:#dcfce7;color:#166534}
 .target.slow{background:#fee2e2;color:#991b1b}
 .target.fast{background:#dbeafe;color:#1e40af}
-.actions{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:8px;margin-top:12px}
-.actions button{padding:15px 8px;border-radius:14px;font-weight:800;font-size:16px;background:var(--bg)}
+.actions{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:8px}
+.actions button{padding:15px 8px;border-radius:14px;font-weight:800;font-size:16px;background:#fff;box-shadow:0 1px 3px rgba(15,23,42,.08)}
 .actions .primary{background:var(--ink);color:#fff}
 .actions .primary.paused{background:var(--ok)}
 .actions .danger{background:#fee2e2;color:var(--slow)}
@@ -139,7 +164,7 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
 #hold.holding i{width:100%;transition:width 1.2s linear}
 
 /* 결과 화면: 사진/영상 버튼 */
-.share-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.share-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 10px}
 .share-btns button{padding:14px 8px;border-radius:14px;font-weight:800;font-size:16px;background:var(--ink);color:#fff}
 .share-btns button+button{background:var(--blue)}
 .legend{margin-top:8px;font-size:13px;color:var(--mut);text-align:center}
@@ -167,8 +192,16 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
 .st-hint{font-size:12px;color:var(--mut);text-align:center;padding:2px 0 4px}
 #stPlay{width:44px;height:40px;border-radius:10px;background:var(--ink);color:#fff;font-size:16px;font-weight:800;flex:0 0 auto}
 #stSeek{flex:1 1 120px;accent-color:var(--acc)}
-#stSave{margin-top:8px}
-#stSave:disabled{opacity:.5}
+#stMake{margin:0 0 2px;background:var(--blue)}
+.st-hr{border:0;border-top:1px solid var(--line);margin:10px 0 4px}
+#stMake:disabled{opacity:.6}
+.st-save{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.st-save button{padding:15px 8px;border-radius:14px;font-weight:800;font-size:16px;background:var(--ink);color:#fff}
+.st-save button+button{background:var(--acc)}
+.st-save button:disabled{opacity:.4}
+.st-tip{font-size:12px;color:var(--mut);line-height:1.5;margin-top:8px;text-align:center}
+#toast{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top));transform:translate(-50%,-20px);z-index:5000;background:rgba(15,23,42,.92);color:#fff;padding:12px 16px;border-radius:14px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;max-width:90vw;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
 @media (min-width:900px){
   #studio{flex-direction:row;flex-wrap:wrap}
   .st-head{width:100%}
@@ -178,12 +211,16 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
 
 /* PC 넓은 화면: 지도 왼쪽, 패널 오른쪽 */
 @media (min-width:900px){
-  body{flex-direction:row}
-  .panel{width:440px;height:100dvh;max-height:none;margin:0;border-radius:0;box-shadow:-6px 0 24px rgba(15,23,42,.10)}
+  body{display:grid;grid-template-columns:1fr 460px;grid-template-rows:auto 1fr}
+  #appHead{grid-column:1 / 3}
+  #mapWrap,body.scr-run #mapWrap,body.scr-summary #mapWrap{grid-column:1;grid-row:2;height:auto;margin:0 0 12px 12px}
+  .panel{grid-column:2;grid-row:2}
 }
 </style>
 </head>
-<body>
+<body class="scr-setup">
+
+<header id="appHead"><b>🏃 자유학교 러닝</b><span id="headSub">오늘의 러닝</span></header>
 
 <div id="mapWrap">
   <div id="map"></div>
@@ -192,6 +229,11 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
     <button id="bLayer" class="mapbtn">🗺 지도</button>
     <button id="bCenter" class="mapbtn" hidden>📍 내 위치</button>
   </div>
+  <div id="drawBar" class="drawbar" hidden>
+    <span id="drawInfo">지도를 눌러 코스를 그리세요</span>
+    <button id="drawUndo">↶ 되돌리기</button><button id="drawDone" class="on">완료</button>
+  </div>
+  <div id="courseTag" class="coursetag" hidden></div>
 </div>
 
 <!-- 1) 준비 화면 -->
@@ -199,68 +241,84 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
   <div id="gpsErr" class="notice" hidden></div>
   <div id="wlNotice" class="notice" hidden>이 브라우저는 화면 꺼짐 방지를 지원하지 않아요. 달리는 동안 화면이 꺼지지 않도록 <b>휴대폰 설정에서 자동 잠금을 잠시 꺼 주세요.</b></div>
 
-  <h1>🏃 오늘의 러닝</h1>
+  <div class="card">
+    <h3>🎯 목표</h3>
+    <div class="row stack">
+      <label>목표 거리</label>
+      <div class="seg" id="segGoal">
+        <button data-v="1000">1km</button><button data-v="1600">1.6km</button><button data-v="2000">2km</button><button data-v="3000">3km</button><button data-v="custom" id="goalCustom">직접</button>
+      </div>
+    </div>
+    <div class="row">
+      <label>목표 시간<span class="hint">분:초</span></label>
+      <div class="field"><button data-k="time" data-d="-10">−</button><input id="inTime" inputmode="decimal"><button data-k="time" data-d="10">+</button></div>
+    </div>
+    <div class="row">
+      <label>목표 페이스<span class="hint">1km당 분:초</span></label>
+      <div class="field"><button data-k="pace" data-d="-5">−</button><input id="inPace" inputmode="decimal"><button data-k="pace" data-d="5">+</button></div>
+    </div>
+    <div class="row">
+      <label>목표 속도<span class="hint">km/h</span></label>
+      <div class="field"><button data-k="speed" data-d="-0.1">−</button><input id="inSpeed" inputmode="decimal"><button data-k="speed" data-d="0.1">+</button></div>
+    </div>
+    <div class="calc" id="calcTxt"></div>
+  </div>
 
-  <h3>목표</h3>
-  <div class="row">
-    <label>목표 거리</label>
-    <div class="seg" id="segGoal">
-      <button data-v="1000">1km</button><button data-v="1600">1.6km</button><button data-v="2000">2km</button><button data-v="3000">3km</button><button data-v="custom" id="goalCustom">직접</button>
+  <div class="card">
+    <h3>🗺 러닝 코스 <small>선택</small></h3>
+    <div class="coursebtns">
+      <button id="cAuto">🤖 자동 생성</button>
+      <button id="cDraw">✏️ 직접 그리기</button>
+      <button id="cClear" class="ghost">지우기</button>
+    </div>
+    <div class="courseinfo" id="courseInfo">목표 거리만큼 코스를 만들 수 있어요. 코스 없이 뛰어도 돼요.</div>
+  </div>
+
+  <div class="card">
+    <h3>🔔 알림</h3>
+    <div class="row">
+      <label>구간 알림</label>
+      <div class="seg" id="segInt"><button data-v="200">200m</button><button data-v="400">400m</button><button data-v="500">500m</button><button data-v="1000">1km</button></div>
+    </div>
+    <div class="row">
+      <label>페이스 경고</label>
+      <div class="seg" id="segWarn"><button data-v="20">자주</button><button data-v="30">보통</button><button data-v="60">가끔</button><button data-v="0">끄기</button></div>
+    </div>
+    <div class="row">
+      <label>허용 범위<span class="hint">이만큼 벗어나면 경고</span></label>
+      <div class="seg" id="segTol"><button data-v="5">±5초</button><button data-v="10">±10초</button><button data-v="15">±15초</button></div>
+    </div>
+    <div class="row">
+      <label>신호음</label>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <div class="seg" id="segSet"><button data-v="A">세트 A</button><button data-v="B">세트 B</button></div>
+        <div class="preview"><button class="s" data-p="slow">🔴 느림</button><button class="f" data-p="fast">🔵 빠름</button><button data-p="ok">🟢 유지</button></div>
+      </div>
     </div>
   </div>
-  <div class="row">
-    <label>목표 시간<span class="hint">분:초</span></label>
-    <div class="field"><button data-k="time" data-d="-10">−</button><input id="inTime" inputmode="decimal"><button data-k="time" data-d="10">+</button></div>
-  </div>
-  <div class="row">
-    <label>목표 페이스<span class="hint">1km당 분:초</span></label>
-    <div class="field"><button data-k="pace" data-d="-5">−</button><input id="inPace" inputmode="decimal"><button data-k="pace" data-d="5">+</button></div>
-  </div>
-  <div class="row">
-    <label>목표 속도<span class="hint">km/h</span></label>
-    <div class="field"><button data-k="speed" data-d="-0.1">−</button><input id="inSpeed" inputmode="decimal"><button data-k="speed" data-d="0.1">+</button></div>
-  </div>
-  <div class="calc" id="calcTxt"></div>
 
-  <h3>알림</h3>
-  <div class="row">
-    <label>구간 알림</label>
-    <div class="seg" id="segInt"><button data-v="200">200m</button><button data-v="400">400m</button><button data-v="500">500m</button><button data-v="1000">1km</button></div>
+  <div class="startbar">
+    <button id="bStart" class="big">출발하기</button>
+    <button id="bDemo" class="link">밖에 나가지 않고 데모로 체험하기 (10배속)</button>
   </div>
-  <div class="row">
-    <label>페이스 경고</label>
-    <div class="seg" id="segWarn"><button data-v="20">자주</button><button data-v="30">보통</button><button data-v="60">가끔</button><button data-v="0">끄기</button></div>
-  </div>
-  <div class="row">
-    <label>허용 범위<span class="hint">이만큼 벗어나면 경고</span></label>
-    <div class="seg" id="segTol"><button data-v="5">±5초</button><button data-v="10">±10초</button><button data-v="15">±15초</button></div>
-  </div>
-  <div class="row">
-    <label>신호음</label>
-    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-      <div class="seg" id="segSet"><button data-v="A">세트 A</button><button data-v="B">세트 B</button></div>
-      <div class="preview"><button class="s" data-p="slow">🔴 느림</button><button class="f" data-p="fast">🔵 빠름</button><button data-p="ok">🟢 유지</button></div>
-    </div>
-  </div>
-
-  <button id="bStart" class="big">출발하기</button>
-  <button id="bDemo" class="link">밖에 나가지 않고 데모로 체험하기 (10배속)</button>
 </section>
 
 <!-- 2) 러닝 화면 -->
 <section id="runPanel" class="panel" hidden>
-  <div class="bigdist num"><b id="vDist">0.00</b><small>km</small></div>
-  <div class="goal">
-    <div class="goalbar" id="gBar"><i id="gFill"></i></div>
-    <div class="goaltxt num"><span id="gProg"></span><span id="gEta"></span></div>
+  <div class="card">
+    <div class="bigdist num"><b id="vDist">0.00</b><small>km</small></div>
+    <div class="goal">
+      <div class="goalbar" id="gBar"><i id="gFill"></i></div>
+      <div class="goaltxt num"><span id="gProg"></span><span id="gEta"></span></div>
+    </div>
+    <div class="grid">
+      <div><label>운동시간</label><b id="vTime" class="num">00:00</b></div>
+      <div><label>현재 페이스</label><b id="vPace" class="num">--'--"</b></div>
+      <div><label>평균 페이스</label><b id="vAvg" class="num">--'--"</b></div>
+      <div><label>속도</label><b id="vSpeed" class="num">0.0</b><small>km/h</small></div>
+    </div>
+    <div id="vTarget" class="target"></div>
   </div>
-  <div class="grid">
-    <div><label>운동시간</label><b id="vTime" class="num">00:00</b></div>
-    <div><label>현재 페이스</label><b id="vPace" class="num">--'--"</b></div>
-    <div><label>평균 페이스</label><b id="vAvg" class="num">--'--"</b></div>
-    <div><label>속도</label><b id="vSpeed" class="num">0.0</b><small>km/h</small></div>
-  </div>
-  <div id="vTarget" class="target"></div>
   <div class="actions">
     <button id="bLock">🔒 잠금</button>
     <button id="bPause" class="primary">⏸ 일시정지</button>
@@ -270,20 +328,25 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
 
 <!-- 3) 결과 화면 -->
 <section id="summary" class="panel" hidden>
-  <div class="toprow"><h1>🎉 수고했어요!</h1><button class="toSetup">⚙️ 처음 설정으로</button></div>
-  <div id="sResult" class="result"></div>
-  <div class="share-btns"><button id="bPhoto">📷 사진 만들기</button><button id="bVideo">🎬 경로 영상</button></div>
-  <div class="legend">경로 색: 🟢 목표 페이스 · 🔴 느림 · 🔵 빠름</div>
-  <div class="grid">
-    <div><label>거리</label><b id="sDist" class="num"></b><small>km</small></div>
-    <div><label>운동시간</label><b id="sTime" class="num"></b></div>
-    <div><label>평균 페이스</label><b id="sPace" class="num"></b></div>
-    <div><label>평균 속도</label><b id="sSpeed" class="num"></b><small>km/h</small></div>
+  <div class="card">
+    <div class="toprow"><h1>🎉 수고했어요!</h1><button class="toSetup">⚙️ 처음 설정으로</button></div>
+    <div id="sResult" class="result"></div>
+    <div class="grid">
+      <div><label>거리</label><b id="sDist" class="num"></b><small>km</small></div>
+      <div><label>운동시간</label><b id="sTime" class="num"></b></div>
+      <div><label>평균 페이스</label><b id="sPace" class="num"></b></div>
+      <div><label>평균 속도</label><b id="sSpeed" class="num"></b><small>km/h</small></div>
+    </div>
+    <div class="legend">경로 색: 🟢 목표 페이스 · 🔴 느림 · 🔵 빠름</div>
   </div>
-  <table>
-    <thead><tr><th>구간</th><th>거리</th><th>구간 시간</th><th>페이스</th><th>목표 대비</th></tr></thead>
-    <tbody id="sSplits"></tbody>
-  </table>
+  <div class="share-btns"><button id="bPhoto">📷 사진 만들기</button><button id="bVideo">🎬 경로 영상</button></div>
+  <div class="card">
+    <h3>📊 구간 기록</h3>
+    <table>
+      <thead><tr><th>구간</th><th>거리</th><th>구간 시간</th><th>페이스</th><th>목표 대비</th></tr></thead>
+      <tbody id="sSplits"></tbody>
+    </table>
+  </div>
   <button class="big toSetup">⚙️ 처음 설정으로</button>
 </section>
 
@@ -309,6 +372,10 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
       <input type="range" id="stSeek" min="0" max="1000" value="0">
       <div class="seg" id="stSpeed"><button data-v="1">1x</button><button data-v="2">2x</button><button data-v="4">4x</button></div>
     </div>
+    <button id="stMake" class="big" hidden>🎬 동영상 만들기</button>
+    <div class="st-save"><button id="stSave1">💾 휴대폰 저장</button><button id="stSave2">📤 저장 후 공유</button></div>
+    <div class="st-tip" id="stTip"></div>
+    <hr class="st-hr">
     <div class="st-row"><span>비율</span>
       <div class="seg" id="stRatio"><button data-v="9:16">세로 9:16</button><button data-v="1:1">정사각 1:1</button></div>
     </div>
@@ -322,7 +389,6 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
       <button class="st-btn" id="stSelStyle">스타일</button><button class="st-btn" id="stDel">🗑</button>
     </div>
     <div class="st-hint">사진 위 항목(기록 카드·글자·이모티콘)을 끌어서 위치를 옮길 수 있어요</div>
-    <button id="stSave" class="big">💾 사진 저장</button>
   </div>
 </div>
 
@@ -520,13 +586,125 @@ function lineFor(seg) {
   return routeLines[seg] ||= L.polyline([], { color: '#f97316', weight: 6, opacity: .95, lineCap: 'round' }).addTo(routeGroup);
 }
 function redrawRoute() {
+  liveLine = null; liveKey = '';
   routeGroup.clearLayers(); routeLines = {};
   if (!run || !run.points.length) return;
-  for (const p of run.points) lineFor(p[4]).addLatLng([p[0], p[1]]);
-  const f = run.points[0];
-  L.circleMarker([f[0], f[1]], { radius: 7, color: '#fff', weight: 2, fillColor: '#16a34a', fillOpacity: 1 })
-    .bindTooltip('출발').addTo(routeGroup);
+  drawColoredRoute(false);
 }
+// 뛰는 중에도 페이스 색으로 경로 그리기
+let liveLine = null, liveKey = '';
+function addLive(lat, lon) {
+  const pts = run.points, n = pts.length;
+  if (n < 2 || pts[n - 2][4] !== pts[n - 1][4]) { liveLine = null; liveKey = ''; return; }
+  const sp = recentSpeed(), st = sp > 0.5 ? paceState(1000 / sp) : 'ok';
+  const key = run.seg + st;
+  if (!liveLine || key !== liveKey) {
+    liveLine = L.polyline([[pts[n - 2][0], pts[n - 2][1]]], { color: PACE_COL[st], weight: 6, opacity: .95, lineCap: 'round' }).addTo(routeGroup);
+    liveKey = key;
+  }
+  liveLine.addLatLng([lat, lon]);
+}
+
+/* ===== 러닝 코스 (목표 거리까지 검정, 초과 부분 주황) =====
+ * 자동 생성: OpenRouteService 무료 키 필요 (openrouteservice.org)
+ */
+const ORS_KEY = '';
+map.createPane('coursePane').style.zIndex = 390;   // 달린 경로보다 아래
+const courseGroup = L.layerGroup().addTo(map);
+let course = load('runCourse');
+var courseReady = true;
+let drawing = null, orsSeed = Math.floor(Math.random() * 90);
+function polyLen(pts) { let d = 0; for (let i = 1; i < pts.length; i++) d += haversine(pts[i - 1][0], pts[i - 1][1], pts[i][0], pts[i][1]); return d; }
+function splitAt(pts, dist) {   // 목표 거리 지점에서 둘로 나누기
+  let d = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const s = haversine(pts[i - 1][0], pts[i - 1][1], pts[i][0], pts[i][1]);
+    if (d + s >= dist) {
+      const f = (dist - d) / s, m = [pts[i - 1][0] + (pts[i][0] - pts[i - 1][0]) * f, pts[i - 1][1] + (pts[i][1] - pts[i - 1][1]) * f];
+      return [[...pts.slice(0, i), m], [m, ...pts.slice(i)]];
+    }
+    d += s;
+  }
+  return [pts.slice(), []];
+}
+const label = (ll, html, over) => L.marker(ll, { interactive: false, icon: L.divIcon({ className: 'course-label' + (over ? ' over' : ''), html: `<div>${html}</div>`, iconSize: [0, 0] }) });
+function courseText(len, goal) {
+  if (len > goal + 10) return `코스 <b>${(len / 1000).toFixed(2)}km</b> · <span class="over">목표 거리 초과 +${Math.round(len - goal)}m</span>`;
+  if (len < goal - 10) return `코스 <b>${(len / 1000).toFixed(2)}km</b> · 목표까지 ${Math.round(goal - len)}m 부족`;
+  return `코스 <b>${(len / 1000).toFixed(2)}km</b> · 목표 거리와 같아요 👍`;
+}
+function renderCourse() {
+  courseGroup.clearLayers();
+  const pts = drawing ? drawing.pts : course && course.pts;
+  const goal = prefs.goal, tag = $('#courseTag');
+  if (!pts || !pts.length) {
+    tag.hidden = true;
+    $('#courseInfo').innerHTML = '목표 거리만큼 코스를 만들 수 있어요. 코스 없이 뛰어도 돼요.';
+    if (drawing) $('#drawInfo').textContent = '지도를 눌러 코스를 그리세요';
+    return;
+  }
+  const len = polyLen(pts), [a, b] = splitAt(pts, goal), pane = 'coursePane';
+  if (pts.length > 1) {
+    L.polyline(pts, { pane, color: '#fff', weight: 10, opacity: .85, lineJoin: 'round' }).addTo(courseGroup);
+    L.polyline(a, { pane, color: '#0f172a', weight: 5, lineJoin: 'round' }).addTo(courseGroup);
+    if (b.length > 1) L.polyline(b, { pane, color: '#f97316', weight: 5, lineJoin: 'round' }).addTo(courseGroup);
+  }
+  L.circleMarker(pts[0], { pane, radius: 7, color: '#0f172a', weight: 3, fillColor: '#fff', fillOpacity: 1 }).addTo(courseGroup);
+  label(pts[0], '출발').addTo(courseGroup);
+  if (b.length > 1) {
+    label(a[a.length - 1], `🏁 목표 ${fmtKm(goal)}km`).addTo(courseGroup);
+    const mid = splitAt(b, polyLen(b) / 2)[0];   // 초과 구간 가운데에 표시
+    label(mid[mid.length - 1], `목표 거리 초과 +${Math.round(len - goal)}m`, true).addTo(courseGroup);
+  }
+  if (drawing) pts.forEach(p => L.circleMarker(p, { pane, radius: 4, color: '#0f172a', weight: 2, fillColor: '#fff', fillOpacity: 1 }).addTo(courseGroup));
+  const txt = courseText(len, goal);
+  tag.innerHTML = txt; tag.hidden = !!drawing;
+  $('#courseInfo').innerHTML = (course && !drawing ? (course.type === 'auto' ? '🤖 자동 생성 코스 · ' : '✏️ 직접 그린 코스 · ') : '') + txt;
+  if (drawing) $('#drawInfo').innerHTML = pts.length < 2 ? '지도를 눌러 다음 지점을 찍으세요' : txt;
+}
+function setCourse(c) {
+  course = c; store('runCourse', course); renderCourse();
+  if (course.pts.length > 1) { follow = false; $('#bCenter').hidden = false; map.fitBounds(L.latLngBounds(course.pts), { padding: [40, 40] }); }
+}
+$('#cClear').onclick = () => {
+  course = null; drawing = null; $('#drawBar').hidden = true;
+  unstore('runCourse'); $('#cAuto').textContent = '🤖 자동 생성'; renderCourse();
+};
+$('#cDraw').onclick = () => {
+  drawing = { pts: lastFix ? [[lastFix.lat, lastFix.lon]] : [] };
+  $('#drawBar').hidden = false; follow = false; $('#bCenter').hidden = false;
+  renderCourse();
+};
+map.on('click', e => { if (!drawing) return; drawing.pts.push([e.latlng.lat, e.latlng.lng]); renderCourse(); });
+$('#drawUndo').onclick = () => { if (drawing) { drawing.pts.pop(); renderCourse(); } };
+$('#drawDone').onclick = () => {
+  const pts = drawing ? drawing.pts : []; drawing = null; $('#drawBar').hidden = true;
+  if (pts.length >= 2) setCourse({ type: 'draw', pts }); else renderCourse();
+};
+$('#cAuto').onclick = async () => {
+  if (!ORS_KEY) {
+    alert('자동 코스 생성에는 OpenRouteService 무료 인증키가 필요해요.\n키를 받으면 넣어 드릴게요.\n지금은 ✏️ 직접 그리기를 써 주세요.');
+    return;
+  }
+  const start = lastFix ? [lastFix.lat, lastFix.lon] : [map.getCenter().lat, map.getCenter().lng];
+  const btn = $('#cAuto'); btn.disabled = true; btn.textContent = '⏳ 만드는 중…';
+  try {
+    const r = await fetch('https://api.openrouteservice.org/v2/directions/foot-walking/geojson', {
+      method: 'POST',
+      headers: { 'Authorization': ORS_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ coordinates: [[start[1], start[0]]], instructions: false,
+        options: { round_trip: { length: prefs.goal, points: 3, seed: orsSeed++ } } })
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+    const pts = j.features[0].geometry.coordinates.map(c => [c[1], c[0]]);
+    setCourse({ type: 'auto', pts });
+    btn.textContent = '🔄 다른 코스';
+  } catch (e) {
+    alert(`코스를 만들지 못했어요 (${e.message}).\n잠시 후 다시 해 보거나 ✏️ 직접 그리기를 써 주세요.`);
+    btn.textContent = '🤖 자동 생성';
+  } finally { btn.disabled = false; }
+};
 
 /* ===== 러닝 상태 =====
  * points: [위도, 경도, 누적운동시간ms, 누적거리m, 구간번호]
@@ -572,7 +750,7 @@ function addPoint(lat, lon, acc) {
     rejects = 0;
   }
   run.points.push([+lat.toFixed(6), +lon.toFixed(6), mt, run.dist, run.seg]);
-  if (run.points.length === 1) redrawRoute(); else lineFor(run.seg).addLatLng([lat, lon]);
+  if (run.points.length === 1) redrawRoute(); else addLive(lat, lon);
   const goalHit = checkGoal();
   checkSplit(goalHit);
   saveSoon();
@@ -678,7 +856,11 @@ window.addEventListener('beforeunload', e => {
 /* ===== 화면 전환 ===== */
 function show(id) {
   for (const s of ['setup', 'runPanel', 'summary']) $('#' + s).hidden = s !== id;
-  setTimeout(() => map.invalidateSize(), 50);
+  document.body.className = 'scr-' + { setup: 'setup', runPanel: 'run', summary: 'summary' }[id];
+  $('#headSub').textContent = { setup: '오늘의 러닝', runPanel: '러닝 중', summary: '러닝 결과' }[id];
+  if (id !== 'setup' && drawing) { drawing = null; $('#drawBar').hidden = true; renderCourse(); }
+  $('#' + id).scrollTop = 0;
+  setTimeout(() => map.invalidateSize(), 300);
 }
 
 /* ===== 준비 화면: 목표 자동 계산 ===== */
@@ -695,6 +877,7 @@ function renderPrefs(skip) {
   $$('#segWarn button').forEach(b => b.classList.toggle('on', +b.dataset.v === prefs.warnEvery));
   $$('#segTol button').forEach(b => b.classList.toggle('on', +b.dataset.v === prefs.tol));
   $$('#segSet button').forEach(b => b.classList.toggle('on', b.dataset.v === prefs.set));
+  if (typeof renderCourse === 'function' && courseReady) renderCourse();
   $('#calcTxt').innerHTML = `<b>${fmtKm(prefs.goal)}km</b>를 <b>${fmtPace(prefs.target)}</b> 페이스로 → ` +
     `<b>${fmtTime(prefs.target * km * 1000)}</b> 완주 · 200m당 <b>${Math.round(prefs.target / 5)}초</b>`;
   savePrefs();
@@ -940,10 +1123,10 @@ function computePaces(r) {   // 각 지점의 앞뒤 10초 페이스 → 상태
   }
   return { pace, st };
 }
-function drawColoredRoute() {
+function drawColoredRoute(withEnd = true) {
   routeGroup.clearLayers(); routeLines = {};
   const pts = run.points;
-  if (pts.length < 2) { redrawRoute(); return; }
+  if (!pts.length) return;
   const { st } = computePaces(run);
   let line = null, cur = null;
   for (let i = 1; i < pts.length; i++) {
@@ -956,7 +1139,7 @@ function drawColoredRoute() {
   }
   const f = pts[0], e = pts[pts.length - 1];
   L.circleMarker([f[0], f[1]], { radius: 7, color: '#0f172a', weight: 3, fillColor: '#fff', fillOpacity: 1 }).bindTooltip('출발').addTo(routeGroup);
-  L.circleMarker([e[0], e[1]], { radius: 7, color: '#fff', weight: 3, fillColor: '#0f172a', fillOpacity: 1 }).bindTooltip('도착').addTo(routeGroup);
+  if (withEnd && pts.length > 1) L.circleMarker([e[0], e[1]], { radius: 7, color: '#fff', weight: 3, fillColor: '#0f172a', fillOpacity: 1 }).bindTooltip('도착').addTo(routeGroup);
 }
 
 /* ===== 사진·영상 만들기 ===== */
@@ -1153,7 +1336,7 @@ function drawFrame(exporting) {
     const dist = lo < pts.length - 1 && f ? pts[lo][3] + (pts[lo + 1][3] - pts[lo][3]) * f : pts[lo][3];
     const pos = drawRoute(cx, lo + f);
     // 달리는 점 + 물결
-    const lw = W * 0.012, pulse = (performance.now() / 900) % 1;
+    const lw = W * 0.012, pulse = ((studio.clock != null ? studio.clock : performance.now()) / 900) % 1;
     cx.beginPath(); cx.arc(...pos, lw * (1.6 + pulse * 2.4), 0, 7); cx.fillStyle = `rgba(249,115,22,${0.45 * (1 - pulse)})`; cx.fill();
     cx.beginPath(); cx.arc(...pos, lw * 1.6, 0, 7); cx.fillStyle = '#f97316'; cx.fill(); cx.lineWidth = lw * 0.55; cx.strokeStyle = '#fff'; cx.stroke();
     if (studio.p >= 1) { setFont(cx, W * 0.06, 400); cx.textAlign = 'center'; cx.textBaseline = 'bottom'; cx.fillText('🏁', pos[0] + W * 0.018, pos[1] - lw); }
@@ -1186,11 +1369,11 @@ async function rebuild() {
   studio.base = null; cx.clearRect(0, 0, W, H);
   await buildBase();
   $('#stMsg').hidden = true;
-  drawFrame();
+  drawFrame(); preparePhoto(); updSaveBtn();
 }
 async function openStudio(mode) {
   if (!run || run.points.length < 2) { alert('경로 기록이 부족해서 만들 수 없어요.'); return; }
-  studio.mode = mode; studio.p = mode === 'video' ? 0 : 1; studio.videoBlob = null;
+  studio.mode = mode; studio.p = mode === 'video' ? 0 : 1; studio.videoBlob = null; studio.photoBlob = null; studio.clock = null;
   if (!studio.els.length) studio.els = [defaultCard()];
   studio.sel = null; updSel();
   $('#stTitle').textContent = mode === 'photo' ? '📷 사진 만들기' : '🎬 경로 영상';
@@ -1241,7 +1424,7 @@ $('#stDel').onclick = () => {
   if (!studio.sel || studio.sel.type === 'card') return;
   studio.els = studio.els.filter(e => e !== studio.sel); studio.sel = null; updSel(); changed();
 };
-function changed() { if (studio.mode === 'video') { studio.videoBlob = null; updSaveBtn(); } if (!studio.playing) drawFrame(); }
+function changed() { if (studio.mode === 'video') { studio.videoBlob = null; updSaveBtn(); } if (!studio.playing) drawFrame(); preparePhoto(); }
 
 /* 끌어서 위치 옮기기 */
 let drag = null;
@@ -1272,7 +1455,6 @@ function loop(ts) {
   studio.p = Math.min(1, studio.p + dt / (studio.D * 1000) * (studio.recording ? 1 : studio.speed));
   $('#stSeek').value = Math.round(studio.p * 1000);
   drawFrame();
-  if (studio.recording) $('#stSave').textContent = `⏺ 녹화 중… ${Math.round(studio.p * 100)}%`;
   if (studio.p >= 1) { studio.playing = false; updPlayBtn(); studio.onEnd?.(); return; }
   rafId = requestAnimationFrame(loop);
 }
@@ -1286,56 +1468,149 @@ $$('#stSpeed button').forEach(b => b.onclick = () => {
 });
 
 /* 저장 / 공유 */
+const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const CAN_WEBCODECS = typeof VideoEncoder !== 'undefined' && typeof VideoFrame !== 'undefined';
 const VIDEO_MIME = (() => {
   if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream) return null;
   return ['video/mp4;codecs=avc1.42E01E', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm']
     .find(t => { try { return MediaRecorder.isTypeSupported(t); } catch { return false; } }) || null;
 })();
+const CAN_VIDEO = CAN_WEBCODECS || !!VIDEO_MIME;
+
+// 사진은 미리 만들어 둠 → 버튼을 누르는 즉시 저장/공유 (아이폰 공유 제한 대응)
+let photoTimer = null;
+function preparePhoto() {
+  if (studio.mode !== 'photo') return;
+  studio.photoBlob = null; updSaveBtn();
+  clearTimeout(photoTimer);
+  photoTimer = setTimeout(() => {
+    if (!studio.base || studio.mode !== 'photo') return;
+    drawFrame(true);
+    cv.toBlob(b => { studio.photoBlob = b; drawFrame(); updSaveBtn(); }, 'image/jpeg', 0.92);
+  }, 300);
+}
+function currentFile() {
+  if (studio.mode === 'photo') return studio.photoBlob && { blob: studio.photoBlob, name: `running_${fileStamp()}.jpg` };
+  return studio.videoBlob && { blob: studio.videoBlob, name: `running_video_${fileStamp()}.${studio.videoBlob.type.includes('mp4') ? 'mp4' : 'webm'}` };
+}
 function updSaveBtn() {
-  const b = $('#stSave'); b.disabled = false;
-  if (studio.mode === 'photo') b.textContent = '💾 사진 저장';
-  else if (!VIDEO_MIME) { b.textContent = '이 브라우저는 동영상 저장을 지원하지 않아요'; b.disabled = true; }
-  else b.textContent = studio.videoBlob ? '📤 동영상 저장 / 공유' : '🎬 동영상 만들기';
+  const f = currentFile(), make = $('#stMake');
+  make.hidden = studio.mode !== 'video';
+  if (studio.mode === 'video') {
+    make.disabled = !CAN_VIDEO || studio.recording;
+    make.textContent = !CAN_VIDEO ? '이 브라우저는 동영상 만들기를 지원하지 않아요'
+      : studio.recording ? make.textContent : studio.videoBlob ? '🔄 동영상 다시 만들기' : '🎬 동영상 만들기';
+  }
+  $('#stSave1').disabled = $('#stSave2').disabled = !f || studio.recording;
+  const kind = studio.mode === 'photo' ? '사진' : '영상';
+  $('#stTip').innerHTML = studio.mode === 'video' && !studio.videoBlob
+    ? '먼저 <b>동영상 만들기</b>를 눌러 주세요. (만드는 동안 화면을 끄지 마세요)'
+    : IS_IOS
+      ? `아이폰: <b>휴대폰 저장</b>은 파일 앱 › 다운로드에 저장돼요. 사진 앱에 넣으려면 <b>저장 후 공유</b>에서 '${studio.mode === 'photo' ? '이미지' : '비디오'} 저장'을 누르세요.`
+      : `<b>휴대폰 저장</b>: 갤러리 › Download 앨범에 저장돼요. <b>저장 후 공유</b>: 저장하고 카톡 등으로 바로 보내요.`;
 }
 function fileStamp() { const d = new Date(run.startedAt); return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}_${String(d.getHours()).padStart(2, '0')}${String(d.getMinutes()).padStart(2, '0')}`; }
-async function shareOrDownload(blob, name) {
-  const file = new File([blob], name, { type: blob.type });
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    try { await navigator.share({ files: [file], title: '자유학교 러닝' }); return; }
-    catch (e) { if (e.name === 'AbortError') return; }
-  }
+function downloadBlob(blob, name) {
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
   document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+  setTimeout(() => URL.revokeObjectURL(a.href), 60000);
 }
-$('#stSave').onclick = async () => {
-  if (!studio.base || studio.recording) return;
-  if (studio.mode === 'photo') {
-    drawFrame(true);
-    const blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', 0.92));
-    drawFrame();
-    if (blob) shareOrDownload(blob, `running_${fileStamp()}.jpg`);
-    return;
+let toastTimer = null;
+function toast(msg) {
+  let t = $('#toast'); if (!t) { t = document.createElement('div'); t.id = 'toast'; document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add('on'); clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('on'), 2600);
+}
+$('#stSave1').onclick = () => {   // 💾 휴대폰 저장 (공유 창 없이)
+  const f = currentFile(); if (!f) return;
+  downloadBlob(f.blob, f.name);
+  toast(IS_IOS ? '파일 앱 › 다운로드에 저장했어요' : '휴대폰에 저장했어요 (갤러리 › Download)');
+};
+$('#stSave2').onclick = async () => {   // 📤 저장 후 공유
+  const f = currentFile(); if (!f) return;
+  const file = new File([f.blob], f.name, { type: f.blob.type });
+  const canShare = navigator.canShare && navigator.canShare({ files: [file] });
+  // 아이폰은 다운로드와 공유를 동시에 못 해서 공유 창의 '저장'으로 사진 앱에 저장
+  if (!IS_IOS) downloadBlob(f.blob, f.name);
+  if (!canShare) { toast(IS_IOS ? '이 브라우저는 공유를 지원하지 않아요' : '저장했어요. 이 브라우저는 공유를 지원하지 않아요'); if (IS_IOS) downloadBlob(f.blob, f.name); return; }
+  try { await navigator.share({ files: [file], title: '자유학교 러닝' }); }
+  catch (e) { if (e.name !== 'AbortError') toast('공유하지 못했어요. 휴대폰 저장 후 직접 보내 주세요'); }
+};
+
+/* 동영상 만들기: 한 장면씩 그려서 정식 mp4로 굽기 (길이 정보가 정확함) */
+let muxerLoading = null;
+function loadMuxer() {
+  if (window.Mp4Muxer) return Promise.resolve();
+  return muxerLoading ||= new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/mp4-muxer@5.2.2/build/mp4-muxer.js';
+    s.onload = res; s.onerror = () => { muxerLoading = null; rej(new Error('muxer')); };
+    document.head.appendChild(s);
+  });
+}
+async function encodeWithWebCodecs(progress) {
+  await loadMuxer();
+  const W = cv.width, H = cv.height, fps = 30, total = Math.ceil((studio.D + 1.5) * fps);
+  let cfg = null;
+  for (const codec of ['avc1.640028', 'avc1.4d0028', 'avc1.42E028', 'avc1.42001f']) {
+    const c = { codec, width: W, height: H, bitrate: 5_000_000, framerate: fps };
+    try { if ((await VideoEncoder.isConfigSupported(c)).supported) { cfg = c; break; } } catch {}
   }
-  if (studio.videoBlob) { shareOrDownload(studio.videoBlob, `running_video_${fileStamp()}.${studio.videoBlob.type.includes('mp4') ? 'mp4' : 'webm'}`); return; }
-  // 녹화: 처음부터 1배속으로 재생하며 화면을 동영상으로 기록
-  pause(); studio.sel = null; updSel();
-  studio.recording = true; studio.p = 0; drawFrame(true);
+  if (!cfg) throw new Error('codec');
+  const muxer = new Mp4Muxer.Muxer({ target: new Mp4Muxer.ArrayBufferTarget(), video: { codec: 'avc', width: W, height: H, frameRate: fps }, fastStart: 'in-memory' });
+  let err = null;
+  const enc = new VideoEncoder({ output: (chunk, meta) => muxer.addVideoChunk(chunk, meta), error: e => { err = e; } });
+  enc.configure(cfg);
+  for (let i = 0; i < total; i++) {
+    if (err) throw err;
+    if ($('#studio').hidden) throw new Error('cancel');
+    const t = i / fps;
+    studio.p = Math.min(1, t / studio.D); studio.clock = t * 1000;
+    drawFrame(true);
+    const vf = new VideoFrame(cv, { timestamp: Math.round(i * 1e6 / fps), duration: Math.round(1e6 / fps) });
+    enc.encode(vf, { keyFrame: i % fps === 0 }); vf.close();
+    while (enc.encodeQueueSize > 4) await new Promise(r => setTimeout(r, 4));
+    if (i % 6 === 0) { progress(i / total); await new Promise(r => setTimeout(r, 0)); }
+  }
+  await enc.flush(); enc.close(); muxer.finalize();
+  return new Blob([muxer.target.buffer], { type: 'video/mp4' });
+}
+async function encodeWithRecorder(progress) {   // 예전 폰용: 화면 녹화 방식
   const stream = cv.captureStream(30), chunks = [];
   const rec = new MediaRecorder(stream, { mimeType: VIDEO_MIME, videoBitsPerSecond: 5e6 });
-  studio.rec = rec;
   rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
   const stopped = new Promise(r => rec.onstop = r);
-  rec.start(250);
-  await new Promise(r => { studio.onEnd = r; play(); });
-  studio.onEnd = null;
-  // 마지막 장면 1.5초 유지
-  const hold = performance.now();
-  await new Promise(r => { const f = () => { drawFrame(true); performance.now() - hold < 1500 && !$('#studio').hidden ? requestAnimationFrame(f) : r(); }; f(); });
-  rec.stop(); await stopped;
-  stream.getTracks().forEach(t => t.stop());
-  studio.recording = false; studio.rec = null;
-  if (!$('#studio').hidden && chunks.length) studio.videoBlob = new Blob(chunks, { type: VIDEO_MIME.split(';')[0] });
+  rec.start();
+  const t0 = performance.now(), total = (studio.D + 1.5) * 1000;
+  await new Promise(r => {
+    const f = () => {
+      const el = performance.now() - t0;
+      studio.p = Math.min(1, el / (studio.D * 1000)); studio.clock = el; drawFrame(true); progress(el / total);
+      el < total && !$('#studio').hidden ? requestAnimationFrame(f) : r();
+    };
+    f();
+  });
+  rec.stop(); await stopped; stream.getTracks().forEach(t => t.stop());
+  if ($('#studio').hidden) throw new Error('cancel');
+  return new Blob(chunks, { type: VIDEO_MIME.split(';')[0] });
+}
+$('#stMake').onclick = async () => {
+  if (!studio.base || studio.recording || !CAN_VIDEO) return;
+  pause(); studio.sel = null; updSel();
+  studio.recording = true; studio.videoBlob = null; updSaveBtn();
+  const make = $('#stMake');
+  const progress = f => { make.textContent = `⏳ 동영상 만드는 중… ${Math.min(100, Math.round(f * 100))}%`; };
+  progress(0);
+  try {
+    let blob = null;
+    if (CAN_WEBCODECS) { try { blob = await encodeWithWebCodecs(progress); } catch (e) { if (e.message === 'cancel') throw e; blob = null; } }
+    if (!blob && VIDEO_MIME) blob = await encodeWithRecorder(progress);
+    studio.videoBlob = blob;
+    if (blob) toast('동영상이 준비됐어요. 저장 버튼을 눌러 주세요');
+  } catch (e) {
+    if (e.message !== 'cancel') alert('동영상을 만들지 못했어요. 다시 시도해 주세요.');
+  }
+  studio.recording = false; studio.clock = null; studio.p = 1;
   updSaveBtn(); drawFrame();
 };
 
