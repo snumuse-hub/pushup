@@ -14,6 +14,12 @@
  */
 const CLASS_CODE = 'RUN2026';
 
+const SHEET_ID = '14RQpr2LYiQkQkzRJRUwgGXv0f2EFPkXM15JyYb5YHCU';
+// 시트에 붙어 있지 않은 스크립트에서도 '자유학교 러닝 기록' 시트를 열도록
+function getSS_() {
+  return SpreadsheetApp.getActiveSpreadsheet() || SpreadsheetApp.openById(SHEET_ID);
+}
+
 const RECORD_SHEET = '기록';
 const SUMMARY_SHEET = '학생별 요약';
 const HEAD = ['제출 시각', '기록 ID', '학년', '반', '번호', '이름', '러닝 날짜', '거리(km)', '운동 시간', '운동 시간(초)',
@@ -21,7 +27,7 @@ const HEAD = ['제출 시각', '기록 ID', '학년', '반', '번호', '이름',
   '목표 거리 기록', '목표 대비(초)', '구간 페이스', '확인 필요', '기기'];
 
 function setup() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getSS_();
   let sh = ss.getSheetByName(RECORD_SHEET);
   if (!sh) sh = ss.insertSheet(RECORD_SHEET, 0);
   sh.getRange(1, 1, 1, HEAD.length).setValues([HEAD]).setFontWeight('bold').setBackground('#fde68a');
@@ -66,7 +72,7 @@ function doPost(e) {
   try {
     const d = JSON.parse(e.postData.contents);
     if (d.code !== CLASS_CODE) return out({ ok: false, error: 'code' });
-    const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(RECORD_SHEET);
+    const sh = getSS_().getSheetByName(RECORD_SHEET);
     if (!sh) return out({ ok: false, error: 'setup 을 먼저 실행해 주세요' });
     // 같은 기록이 두 번 들어오지 않게
     const last = sh.getLastRow();
@@ -83,6 +89,7 @@ function doPost(e) {
     ]);
     // 글자로 저장되는 시간 칸(예: 12:58)이 시각으로 바뀌지 않게 고정
     const r = sh.getLastRow();
+    sh.getRange(r, 1).setNumberFormat('yyyy-mm-dd hh:mm'); sh.getRange(r, 7).setNumberFormat('yyyy-mm-dd hh:mm');
     sh.getRange(r, 9).setNumberFormat('@'); sh.getRange(r, 15).setNumberFormat('@'); sh.getRange(r, 18).setNumberFormat('@');
     sh.getRange(r, 9).setValue(safe(d.time)); sh.getRange(r, 15).setValue(safe(d.goalTime)); sh.getRange(r, 18).setValue(safe(d.goalRecord));
     if (d.flags) sh.getRange(r, 21).setBackground('#fee2e2');
