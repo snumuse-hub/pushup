@@ -151,7 +151,7 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
   <div id="map"></div>
   <div id="gpsBadge" class="gpsbadge bad">📡 GPS 찾는 중…</div>
   <div class="mapbtns">
-    <button id="bLayer" class="mapbtn">🛰 위성</button>
+    <button id="bLayer" class="mapbtn">🗺 지도</button>
     <button id="bCenter" class="mapbtn" hidden>📍 내 위치</button>
   </div>
 </div>
@@ -275,7 +275,7 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
  * 브이월드(국토교통부) 키를 넣으면 국내 상세 지도/항공사진을 씁니다. (무료, vworld.kr 에서 발급)
  * 비워두면 OpenStreetMap(일반) + Esri(위성)를 사용합니다.
  */
-const VWORLD_KEY = '';
+const VWORLD_KEY = 'E27DF132-ACB5-4BB6-BEF4-8CB555EF8C4E';   // 브이월드 인증키 (https://snumuse-hub.github.io 에서만 동작)
 const MAX_ACCURACY = 30;   // 이보다 오차가 큰 GPS 신호는 버림 (m)
 const MAX_SPEED = 9;       // 이보다 빠르면 GPS 튐으로 판단 (m/s)
 const MIN_STEP = 3;        // 이보다 짧은 이동은 제자리 떨림으로 무시 (m)
@@ -403,32 +403,41 @@ if (!('wakeLock' in navigator)) $('#wlNotice').hidden = false;
 
 /* ===== 설정값 ===== */
 const prefs = Object.assign(
-  { goal: 2000, target: 390, interval: 200, warnEvery: 30, tol: 10, set: 'A', layer: 'sat' },
+  { goal: 2000, target: 390, interval: 200, warnEvery: 30, tol: 10, set: 'A', layer: 'vsat' },
   load('runPrefs'));
+if (!prefs.mapV2 && VWORLD_KEY) { prefs.layer = 'vsat'; prefs.mapV2 = 1; }   // 브이월드 추가 후 처음 한 번은 브이월드 항공으로
 const savePrefs = () => store('runPrefs', prefs);
 
 /* ===== 지도 ===== */
 const map = L.map('map', { zoomControl: false }).setView([37.5665, 126.978], 16);
-const layers = VWORLD_KEY ? {
-  map: L.tileLayer(`https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Base/{z}/{y}/{x}.png`, { maxZoom: 19, attribution: '© VWorld' }),
-  sat: L.layerGroup([
-    L.tileLayer(`https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Satellite/{z}/{y}/{x}.jpeg`, { maxZoom: 19, attribution: '© VWorld' }),
-    L.tileLayer(`https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Hybrid/{z}/{y}/{x}.png`, { maxZoom: 19 })
-  ])
-} : {
-  map: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }),
-  sat: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    { maxZoom: 19, maxNativeZoom: 18, attribution: 'Esri, Maxar' })
-};
+const VW = (layer, ext) => `https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/${layer}/{z}/{y}/{x}.${ext}`;
+// 지도 종류: 버튼을 누를 때마다 순서대로 바뀜
+const LAYERS = [
+  { id: 'vsat', name: '브이월드 항공', need: true, make: () => L.layerGroup([
+      L.tileLayer(VW('Satellite', 'jpeg'), { maxZoom: 19, attribution: '© 국토교통부 브이월드' }),
+      L.tileLayer(VW('Hybrid', 'png'), { maxZoom: 19 })]) },
+  { id: 'vmap', name: '브이월드 일반', need: true, make: () =>
+      L.tileLayer(VW('Base', 'png'), { maxZoom: 19, attribution: '© 국토교통부 브이월드' }) },
+  { id: 'sat', name: 'Esri 위성', make: () =>
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        { maxZoom: 19, maxNativeZoom: 18, attribution: 'Esri, Maxar' }) },
+  { id: 'map', name: 'OpenStreetMap', make: () =>
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }) }
+].filter(l => !l.need || VWORLD_KEY);
+const layerCache = {};
 let curLayer = null;
-function setLayer(name) {
+function setLayer(id) {
+  const def = LAYERS.find(l => l.id === id) || LAYERS[0];
   if (curLayer) map.removeLayer(curLayer);
-  curLayer = layers[name].addTo(map);
-  prefs.layer = name; savePrefs();
-  $('#bLayer').textContent = name === 'sat' ? '🗺 일반' : '🛰 위성';
+  curLayer = (layerCache[def.id] ||= def.make()).addTo(map);
+  prefs.layer = def.id; savePrefs();
+  $('#bLayer').textContent = '🗺 ' + def.name;
 }
 setLayer(prefs.layer);
-$('#bLayer').onclick = () => setLayer(prefs.layer === 'sat' ? 'map' : 'sat');
+$('#bLayer').onclick = () => {
+  const i = LAYERS.findIndex(l => l.id === prefs.layer);
+  setLayer(LAYERS[(i + 1) % LAYERS.length].id);
+};
 
 const accCircle = L.circle([0, 0], { radius: 1, weight: 1, color: '#2563eb', fillOpacity: .12, interactive: false });
 const meDot = L.circleMarker([0, 0], { radius: 8, color: '#fff', weight: 3, fillColor: '#2563eb', fillOpacity: 1 });
