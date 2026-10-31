@@ -606,9 +606,9 @@ function addLive(lat, lon) {
 }
 
 /* ===== 러닝 코스 (목표 거리까지 검정, 초과 부분 주황) =====
- * 자동 생성: OpenRouteService 무료 키 필요 (openrouteservice.org)
+ * 자동 생성: 기본은 OSM 공개 길찾기 서버(가입 없음), ORS_KEY를 넣으면 OpenRouteService 사용
  */
-const ORS_KEY = '';
+const ORS_KEY = '';   // 선택: OpenRouteService 키 (비워두면 OSM 공개 서버 사용)
 map.createPane('coursePane').style.zIndex = 390;   // 달린 경로보다 아래
 const courseGroup = L.layerGroup().addTo(map);
 let course = load('runCourse');
@@ -681,23 +681,58 @@ $('#drawDone').onclick = () => {
   const pts = drawing ? drawing.pts : []; drawing = null; $('#drawBar').hidden = true;
   if (pts.length >= 2) setCourse({ type: 'draw', pts }); else renderCourse();
 };
-$('#cAuto').onclick = async () => {
-  if (!ORS_KEY) {
-    alert('자동 코스 생성에는 OpenRouteService 무료 인증키가 필요해요.\n키를 받으면 넣어 드릴게요.\n지금은 ✏️ 직접 그리기를 써 주세요.');
-    return;
+// 시간 제한 있는 fetch
+async function fetchJSON(url, opts = {}, ms = 12000) {
+  const ac2 = new AbortController(), to = setTimeout(() => ac2.abort(), ms);
+  try {
+    const r = await fetch(url, { ...opts, signal: ac2.signal });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.json();
+  } catch (e) { throw new Error(e.name === 'AbortError' ? '응답 시간 초과' : e.message); }
+  finally { clearTimeout(to); }
+}
+// 출발점에서 bearing 방향으로 dist(m) 떨어진 지점
+function destPoint(lat, lon, bearingDeg, dist) {
+  const R = 6371000, b = bearingDeg * Math.PI / 180, p1 = lat * Math.PI / 180, l1 = lon * Math.PI / 180, d = dist / R;
+  const p2 = Math.asin(Math.sin(p1) * Math.cos(d) + Math.cos(p1) * Math.sin(d) * Math.cos(b));
+  const l2 = l1 + Math.atan2(Math.sin(b) * Math.sin(d) * Math.cos(p1), Math.cos(d) - Math.sin(p1) * Math.sin(p2));
+  return [p2 * 180 / Math.PI, l2 * 180 / Math.PI];
+}
+// ① OSM 공개 서버(FOSSGIS 보행자 길찾기): 가입·키 없음
+//    출발점을 지나는 원 위에 경유지 3개 → 출발→경유지→출발 길 연결 → 거리가 맞을 때까지 원 크기 조절
+async function osmRoundTrip(start, goal, seed) {
+  const bearing = (seed * 137.5) % 360;            // 누를 때마다 다른 방향
+  let r = goal / (2 * Math.PI * 1.25), best = null;
+  for (let tries = 0; tries < 4; tries++) {
+    const center = destPoint(start[0], start[1], bearing, r);
+    const wps = [90, 180, 270].map(a => destPoint(center[0], center[1], (bearing + 180 + a) % 360, r));
+    const coords = [start, ...wps, start].map(p => `${p[1].toFixed(6)},${p[0].toFixed(6)}`).join(';');
+    const j = await fetchJSON(`https://routing.openstreetmap.de/routed-foot/route/v1/driving/${coords}?overview=full&geometries=geojson&continue_straight=false`);
+    if (j.code !== 'Ok' || !j.routes || !j.routes.length) throw new Error('길을 찾지 못함');
+    const pts = j.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+    const d = polyLen(pts);   // 화면에 표시하는 거리와 같은 방식으로 계산
+    if (!best || Math.abs(d - goal) < Math.abs(best.d - goal)) best = { pts, d };
+    if (Math.abs(d - goal) / goal < 0.07) break;   // ±7% 안이면 완료
+    r *= Math.max(0.5, Math.min(1.8, goal / d));
   }
+  return best.pts;
+}
+// ② OpenRouteService (키가 있을 때만)
+async function orsRoundTrip(start, goal, seed) {
+  const j = await fetchJSON('https://api.openrouteservice.org/v2/directions/foot-walking/geojson', {
+    method: 'POST',
+    headers: { 'Authorization': ORS_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ coordinates: [[start[1], start[0]]], instructions: false,
+      options: { round_trip: { length: goal, points: 3, seed } } })
+  });
+  return j.features[0].geometry.coordinates.map(c => [c[1], c[0]]);
+}
+$('#cAuto').onclick = async () => {
   const start = lastFix ? [lastFix.lat, lastFix.lon] : [map.getCenter().lat, map.getCenter().lng];
   const btn = $('#cAuto'); btn.disabled = true; btn.textContent = '⏳ 만드는 중…';
+  const seed = orsSeed++;
   try {
-    const r = await fetch('https://api.openrouteservice.org/v2/directions/foot-walking/geojson', {
-      method: 'POST',
-      headers: { 'Authorization': ORS_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ coordinates: [[start[1], start[0]]], instructions: false,
-        options: { round_trip: { length: prefs.goal, points: 3, seed: orsSeed++ } } })
-    });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const j = await r.json();
-    const pts = j.features[0].geometry.coordinates.map(c => [c[1], c[0]]);
+    const pts = ORS_KEY ? await orsRoundTrip(start, prefs.goal, seed) : await osmRoundTrip(start, prefs.goal, seed);
     setCourse({ type: 'auto', pts });
     btn.textContent = '🔄 다른 코스';
   } catch (e) {
