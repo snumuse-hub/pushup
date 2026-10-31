@@ -19,11 +19,12 @@ body{
   background:var(--bg);color:var(--ink);display:flex;flex-direction:column;
   height:100dvh;overflow:hidden;-webkit-tap-highlight-color:transparent;
 }
-button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+button,input{font:inherit;color:inherit}
+button{border:0;background:none;cursor:pointer}
 .num{font-variant-numeric:tabular-nums}
 
 /* 지도 */
-#mapWrap{position:relative;z-index:0;flex:1 1 auto;min-height:160px}
+#mapWrap{position:relative;z-index:0;flex:1 1 auto;min-height:150px}
 #map{position:absolute;inset:0;background:#dbe3ea}
 .mapbtns{position:absolute;z-index:1000;top:calc(10px + env(safe-area-inset-top));right:10px;display:flex;flex-direction:column;gap:8px}
 .mapbtn{background:#fff;border-radius:12px;padding:8px 12px;font-size:14px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.18)}
@@ -31,27 +32,31 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .gpsbadge{position:absolute;z-index:1000;top:calc(10px + env(safe-area-inset-top));left:10px;background:#fff;border-radius:12px;padding:7px 11px;font-size:13px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 .gpsbadge.good{color:var(--ok)} .gpsbadge.mid{color:#ca8a04} .gpsbadge.bad{color:var(--slow)}
 
-/* 아래 패널 */
+/* 패널 */
 .panel{
   position:relative;z-index:1;flex:0 0 auto;background:var(--card);
   border-radius:22px 22px 0 0;margin-top:-18px;
   padding:18px 16px calc(16px + env(safe-area-inset-bottom));
-  box-shadow:0 -6px 24px rgba(15,23,42,.10);max-height:72dvh;overflow:auto;
+  box-shadow:0 -6px 24px rgba(15,23,42,.10);max-height:74dvh;overflow:auto;
 }
 .panel[hidden]{display:none}
-h1{font-size:20px;margin-bottom:12px}
-.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
-.row:last-of-type{border-bottom:0}
-.row label{font-weight:600;font-size:15px}
-.row .hint{display:block;color:var(--mut);font-size:12px;font-weight:400;margin-top:2px}
-.stepper{display:flex;align-items:center;gap:6px}
-.stepper button{width:40px;height:40px;border-radius:12px;background:var(--bg);font-size:22px;font-weight:700}
-.stepper b{min-width:64px;text-align:center;font-size:22px}
-.seg{display:flex;background:var(--bg);border-radius:12px;padding:3px}
-.seg button{padding:8px 11px;border-radius:9px;font-size:14px;font-weight:600;color:var(--mut)}
+h1{font-size:20px;margin-bottom:10px}
+h3{font-size:13px;color:var(--mut);font-weight:700;margin:16px 0 6px;letter-spacing:.02em}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row>label{font-weight:600;font-size:15px;flex:0 0 auto}
+.row .hint{display:block;color:var(--mut);font-size:12px;font-weight:400;margin-top:1px}
+.seg{display:flex;flex-wrap:wrap;background:var(--bg);border-radius:12px;padding:3px;gap:2px}
+.seg button{padding:7px 10px;border-radius:9px;font-size:14px;font-weight:600;color:var(--mut)}
 .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.field{display:flex;align-items:center;gap:4px}
+.field button{width:36px;height:38px;border-radius:10px;background:var(--bg);font-size:20px;font-weight:700}
+.field input{width:84px;height:38px;border:1.5px solid var(--line);border-radius:10px;text-align:center;font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;background:#fff}
+.field input:focus{outline:none;border-color:var(--acc)}
+.field small{font-size:12px;color:var(--mut);width:34px}
+.calc{margin-top:6px;font-size:13px;color:var(--mut);text-align:center;background:var(--bg);border-radius:10px;padding:8px}
+.calc b{color:var(--ink)}
 .big{width:100%;margin-top:14px;padding:17px;border-radius:16px;background:var(--acc);color:#fff;font-size:19px;font-weight:800}
-.big:disabled{opacity:.5}
 .link{display:block;margin:12px auto 0;color:var(--mut);font-size:14px;text-decoration:underline}
 .notice{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5;margin-bottom:10px}
 .notice[hidden]{display:none}
@@ -61,17 +66,26 @@ h1{font-size:20px;margin-bottom:12px}
 .resume .btns{display:flex;gap:8px}
 .resume button{flex:1;padding:10px;border-radius:10px;font-weight:700;background:var(--blue);color:#fff}
 .resume button.ghost{background:#fff;color:var(--mut);border:1px solid var(--line)}
+.preview{display:flex;gap:6px}
+.preview button{font-size:12px;padding:5px 8px;border-radius:8px;background:var(--bg);font-weight:700}
+.preview button.s{color:var(--slow)} .preview button.f{color:var(--fast)}
 
 /* 러닝 화면 */
 .bigdist{text-align:center;line-height:1}
-.bigdist b{font-size:64px;font-weight:800;letter-spacing:-2px}
+.bigdist b{font-size:60px;font-weight:800;letter-spacing:-2px}
 .bigdist small{font-size:20px;color:var(--mut);margin-left:4px;font-weight:700}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
-.grid div{background:var(--bg);border-radius:14px;padding:10px 12px}
+.goal{margin-top:10px}
+.goalbar{height:10px;background:var(--bg);border-radius:99px;overflow:hidden}
+.goalbar i{display:block;height:100%;width:0;background:var(--acc);border-radius:99px;transition:width .4s}
+.goalbar.done i{background:var(--ok)}
+.goaltxt{display:flex;justify-content:space-between;font-size:13px;color:var(--mut);margin-top:5px;font-weight:600}
+.goaltxt .ahead{color:var(--ok)} .goaltxt .behind{color:var(--slow)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.grid div{background:var(--bg);border-radius:14px;padding:9px 12px}
 .grid label{display:block;font-size:12px;color:var(--mut);font-weight:600}
 .grid b{font-size:26px;font-weight:800}
 .grid small{font-size:13px;color:var(--mut);margin-left:3px}
-.target{margin-top:10px;border-radius:12px;padding:10px 12px;font-size:14px;font-weight:700;text-align:center;background:var(--bg)}
+.target{margin-top:10px;border-radius:12px;padding:10px 12px;font-size:14px;font-weight:700;text-align:center;background:var(--bg);transition:background .3s}
 .target.ok{background:#dcfce7;color:#166534}
 .target.slow{background:#fee2e2;color:#991b1b}
 .target.fast{background:#dbeafe;color:#1e40af}
@@ -81,14 +95,18 @@ h1{font-size:20px;margin-bottom:12px}
 .actions .primary.paused{background:var(--ok)}
 .actions .danger{background:#fee2e2;color:var(--slow)}
 
-/* 결과 화면 */
+/* 결과 */
+.result{margin-top:10px;border-radius:14px;padding:12px 14px;font-weight:700;font-size:15px;line-height:1.5}
+.result.good{background:#dcfce7;color:#166534}
+.result.bad{background:#fee2e2;color:#991b1b}
+.result.none{background:var(--bg);color:var(--mut)}
 table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
 th,td{padding:8px 4px;text-align:right;border-bottom:1px solid var(--line)}
 th:first-child,td:first-child{text-align:left}
 th{color:var(--mut);font-size:12px;font-weight:600}
 td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight:700} td.ok{color:var(--ok);font-weight:700}
 
-/* 잠금 화면 */
+/* 잠금 */
 #lock{position:fixed;inset:0;z-index:3000;background:rgba(15,23,42,.96);color:#fff;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
   user-select:none;-webkit-user-select:none;touch-action:none}
@@ -98,10 +116,18 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
 #lock .l-row{display:flex;gap:28px;text-align:center}
 #lock .l-row label{display:block;font-size:13px;color:#94a3b8}
 #lock .l-row b{font-size:32px;font-weight:800}
-#hold{margin-top:30px;position:relative;overflow:hidden;width:240px;padding:18px;border-radius:999px;
-  background:rgba(255,255,255,.12);font-weight:700;font-size:16px;color:#fff}
+#lState{font-size:18px;font-weight:800;padding:8px 16px;border-radius:99px;background:rgba(255,255,255,.1)}
+#lState.slow{background:#dc2626} #lState.fast{background:#2563eb} #lState.ok{background:#16a34a}
+#hold{margin-top:24px;position:relative;overflow:hidden;width:240px;padding:18px;border-radius:999px;
+  background:rgba(255,255,255,.12);font-weight:700;font-size:16px;color:#fff;z-index:0}
 #hold i{position:absolute;inset:0;width:0;background:rgba(249,115,22,.7);z-index:-1}
 #hold.holding i{width:100%;transition:width 1.2s linear}
+
+/* PC 넓은 화면: 지도 왼쪽, 패널 오른쪽 */
+@media (min-width:900px){
+  body{flex-direction:row}
+  .panel{width:440px;height:100dvh;max-height:none;margin:0;border-radius:0;box-shadow:-6px 0 24px rgba(15,23,42,.10)}
+}
 </style>
 </head>
 <body>
@@ -125,16 +151,49 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
   <div id="wlNotice" class="notice" hidden>이 브라우저는 화면 꺼짐 방지를 지원하지 않아요. 달리는 동안 화면이 꺼지지 않도록 <b>휴대폰 설정에서 자동 잠금을 잠시 꺼 주세요.</b></div>
 
   <h1>🏃 오늘의 러닝</h1>
+
+  <h3>목표</h3>
   <div class="row">
-    <label>목표 페이스<span class="hint">1km를 달리는 시간</span></label>
-    <div class="stepper"><button id="tMinus">−</button><b id="tVal" class="num">6'30"</b><button id="tPlus">+</button></div>
-  </div>
-  <div class="row">
-    <label>음성 알림 간격</label>
-    <div class="seg" id="segInt">
-      <button data-v="200">200m</button><button data-v="400">400m</button><button data-v="500">500m</button><button data-v="1000">1km</button>
+    <label>목표 거리</label>
+    <div class="seg" id="segGoal">
+      <button data-v="1000">1km</button><button data-v="1600">1.6km</button><button data-v="2000">2km</button><button data-v="3000">3km</button><button data-v="custom" id="goalCustom">직접</button>
     </div>
   </div>
+  <div class="row">
+    <label>목표 시간<span class="hint">분:초</span></label>
+    <div class="field"><button data-k="time" data-d="-10">−</button><input id="inTime" inputmode="decimal"><button data-k="time" data-d="10">+</button></div>
+  </div>
+  <div class="row">
+    <label>목표 페이스<span class="hint">1km당 분:초</span></label>
+    <div class="field"><button data-k="pace" data-d="-5">−</button><input id="inPace" inputmode="decimal"><button data-k="pace" data-d="5">+</button></div>
+  </div>
+  <div class="row">
+    <label>목표 속도<span class="hint">km/h</span></label>
+    <div class="field"><button data-k="speed" data-d="-0.1">−</button><input id="inSpeed" inputmode="decimal"><button data-k="speed" data-d="0.1">+</button></div>
+  </div>
+  <div class="calc" id="calcTxt"></div>
+
+  <h3>알림</h3>
+  <div class="row">
+    <label>구간 알림</label>
+    <div class="seg" id="segInt"><button data-v="200">200m</button><button data-v="400">400m</button><button data-v="500">500m</button><button data-v="1000">1km</button></div>
+  </div>
+  <div class="row">
+    <label>페이스 경고</label>
+    <div class="seg" id="segWarn"><button data-v="20">자주</button><button data-v="30">보통</button><button data-v="60">가끔</button><button data-v="0">끄기</button></div>
+  </div>
+  <div class="row">
+    <label>허용 범위<span class="hint">이만큼 벗어나면 경고</span></label>
+    <div class="seg" id="segTol"><button data-v="5">±5초</button><button data-v="10">±10초</button><button data-v="15">±15초</button></div>
+  </div>
+  <div class="row">
+    <label>신호음</label>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+      <div class="seg" id="segSet"><button data-v="A">세트 A</button><button data-v="B">세트 B</button></div>
+      <div class="preview"><button class="s" data-p="slow">🔴 느림</button><button class="f" data-p="fast">🔵 빠름</button><button data-p="ok">🟢 유지</button></div>
+    </div>
+  </div>
+
   <button id="bStart" class="big">출발하기</button>
   <button id="bDemo" class="link">밖에 나가지 않고 데모로 체험하기 (10배속)</button>
 </section>
@@ -142,13 +201,17 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
 <!-- 2) 러닝 화면 -->
 <section id="runPanel" class="panel" hidden>
   <div class="bigdist num"><b id="vDist">0.00</b><small>km</small></div>
+  <div class="goal">
+    <div class="goalbar" id="gBar"><i id="gFill"></i></div>
+    <div class="goaltxt num"><span id="gProg"></span><span id="gEta"></span></div>
+  </div>
   <div class="grid">
     <div><label>운동시간</label><b id="vTime" class="num">00:00</b></div>
     <div><label>현재 페이스</label><b id="vPace" class="num">--'--"</b></div>
     <div><label>평균 페이스</label><b id="vAvg" class="num">--'--"</b></div>
     <div><label>속도</label><b id="vSpeed" class="num">0.0</b><small>km/h</small></div>
   </div>
-  <div id="vTarget" class="target">목표 페이스 6'30"</div>
+  <div id="vTarget" class="target"></div>
   <div class="actions">
     <button id="bLock">🔒 잠금</button>
     <button id="bPause" class="primary">⏸ 일시정지</button>
@@ -159,6 +222,7 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
 <!-- 3) 결과 화면 -->
 <section id="summary" class="panel" hidden>
   <h1>🎉 수고했어요!</h1>
+  <div id="sResult" class="result"></div>
   <div class="grid">
     <div><label>거리</label><b id="sDist" class="num"></b><small>km</small></div>
     <div><label>운동시간</label><b id="sTime" class="num"></b></div>
@@ -172,13 +236,14 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
   <button id="bAgain" class="big">처음으로</button>
 </section>
 
-<!-- 잠금 화면 (주머니 속 오작동 방지) -->
+<!-- 잠금 화면 -->
 <div id="lock" hidden>
   <div class="l-dist num"><span id="lDist">0.00</span><small>km</small></div>
   <div class="l-row">
     <div><label>시간</label><b id="lTime" class="num">00:00</b></div>
     <div><label>현재 페이스</label><b id="lPace" class="num">--'--"</b></div>
   </div>
+  <div id="lState"></div>
   <button id="hold"><i></i>길게 눌러서 잠금 해제</button>
 </div>
 
@@ -191,14 +256,17 @@ const VWORLD_KEY = '';
 const MAX_ACCURACY = 30;   // 이보다 오차가 큰 GPS 신호는 버림 (m)
 const MAX_SPEED = 9;       // 이보다 빠르면 GPS 튐으로 판단 (m/s)
 const MIN_STEP = 3;        // 이보다 짧은 이동은 제자리 떨림으로 무시 (m)
+const WARMUP_MS = 60000;   // 출발 후 1분은 페이스 경고 없음
+const HOLD_MS = 15000;     // 벗어난 상태가 15초 이어져야 경고
 
 /* ===== 유틸 ===== */
 const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
 const load = k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
 const store = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 const unstore = k => { try { localStorage.removeItem(k); } catch {} };
 
-let demo = null;                                   // 데모 모드면 가상 시계 사용
+let demo = null;
 const now = () => demo ? demo.t : Date.now();
 
 function haversine(lat1, lon1, lat2, lon2) {
@@ -208,7 +276,7 @@ function haversine(lat1, lon1, lat2, lon2) {
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 function fmtTime(ms) {
-  const s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), ss = s % 60;
+  const s = Math.round(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), ss = s % 60;
   const p = n => String(n).padStart(2, '0');
   return h ? `${h}:${p(m)}:${p(ss)}` : `${p(m)}:${p(ss)}`;
 }
@@ -217,19 +285,72 @@ function fmtPace(sec) {
   const s = Math.round(sec);
   return `${Math.floor(s / 60)}'${String(s % 60).padStart(2, '0')}"`;
 }
-const sayPace = sec => { const s = Math.round(sec); return `${Math.floor(s / 60)}분 ${s % 60}초`; };
+const fmtKm = m => (m / 1000).toFixed(m % 1000 === 0 ? 0 : (m % 100 === 0 ? 1 : 2));
+const sayTime = sec => { const s = Math.round(sec), m = Math.floor(s / 60); return (m ? `${m}분 ` : '') + `${s % 60}초`; };
 const sayDist = m => m < 1000 ? `${Math.round(m)}미터`
   : (m % 1000 === 0 ? `${m / 1000}킬로미터` : `${(m / 1000).toFixed(1)}킬로미터`);
+// "13:00", "13'00", "13 00", "13" → 초
+function parseMS(str) {
+  const p = String(str).trim().split(/[:'’"\s.,분초]+/).filter(Boolean).map(Number);
+  if (!p.length || p.some(isNaN)) return NaN;
+  if (p.length === 1) return p[0] * 60;
+  if (p.length === 2) return p[0] * 60 + p[1];
+  return p[0] * 3600 + p[1] * 60 + p[2];
+}
+const msText = sec => { const s = Math.round(sec), m = Math.floor(s / 60); return `${m}:${String(s % 60).padStart(2, '0')}`; };
+
+/* ===== 소리 (Web Audio로 직접 합성 → 파일 필요 없음) ===== */
+let actx = null;
+function ac() {
+  if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+  if (actx.state === 'suspended') actx.resume();
+  return actx;
+}
+function tone(freq, start, dur, type = 'sine', vol = 0.5) {
+  const c = ac(), t = c.currentTime + start;
+  const o = c.createOscillator(), g = c.createGain();
+  o.type = type; o.frequency.value = freq;
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol, t + 0.015);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(c.destination);
+  o.start(t); o.stop(t + dur + 0.05);
+}
+const C5 = 523.25, E5 = 659.25, G5 = 783.99, C6 = 1046.5, G4 = 392, C4 = 261.63;
+const SOUNDS = {
+  A_slow: { play() { tone(C5, 0, .16, 'triangle'); tone(E5, .16, .16, 'triangle'); tone(G5, .32, .26, 'triangle'); }, vib: [80, 60, 80, 60, 160], len: 600 },
+  A_fast: { play() { tone(G5, 0, .3); tone(C5, .32, .45); }, vib: [300, 150, 300], len: 800 },
+  B_slow: { play() { for (let i = 0; i < 4; i++) tone(1320, i * .13, .08, 'square', .22); }, vib: [60, 60, 60, 60, 60, 60, 60], len: 600 },
+  B_fast: { play() { tone(C4 * 1.5, 0, .55, 'sine', .6); tone(C4 * 1.5, .7, .55, 'sine', .6); }, vib: [500, 200, 500], len: 1300 },
+  ok:     { play() { tone(C6, 0, 1.1, 'sine', .4); tone(C6 * 2, 0, .6, 'sine', .08); }, vib: [120], len: 900 },
+  split:  { play() { tone(1760, 0, .07, 'sine', .35); tone(1760, .12, .07, 'sine', .35); }, vib: [50, 70, 50], len: 350 },
+  finish: { play() { tone(C5, 0, .14, 'triangle'); tone(E5, .14, .14, 'triangle'); tone(G5, .28, .14, 'triangle'); tone(C6, .42, .6, 'triangle'); tone(G4, .42, .6, 'sine', .25); }, vib: [100, 50, 100, 50, 400], len: 1100 }
+};
+function sound(name) {
+  const key = (name === 'slow' || name === 'fast') ? `${prefs.set}_${name}` : name;
+  const s = SOUNDS[key];
+  try { s.play(); } catch {}
+  navigator.vibrate?.(s.vib);
+  return s.len;
+}
 
 /* ===== 음성 ===== */
 let koVoice = null;
 function pickVoice() { koVoice = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith('ko')) || null; }
 if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+let quietUntil = 0;   // 안내가 겹치지 않도록 (실제 시각 기준)
 function say(text) {
+  quietUntil = Date.now() + 2500 + text.length * 120;
   if (!('speechSynthesis' in window)) return;
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'ko-KR'; u.rate = 1.05; if (koVoice) u.voice = koVoice;
   speechSynthesis.speak(u);
+}
+// 신호음 → 음성
+function cue(soundName, text) {
+  const len = sound(soundName);
+  quietUntil = Date.now() + len + 2500;
+  if (text) setTimeout(() => say(text), len + 150);
 }
 
 /* ===== 화면 꺼짐 방지 ===== */
@@ -241,27 +362,30 @@ async function keepScreenOn() {
 function releaseScreen() { try { wakeLock && wakeLock.release(); } catch {} wakeLock = null; }
 if (!('wakeLock' in navigator)) $('#wlNotice').hidden = false;
 
+/* ===== 설정값 ===== */
+const prefs = Object.assign(
+  { goal: 2000, target: 390, interval: 200, warnEvery: 30, tol: 10, set: 'A', layer: 'sat' },
+  load('runPrefs'));
+const savePrefs = () => store('runPrefs', prefs);
+
 /* ===== 지도 ===== */
 const map = L.map('map', { zoomControl: false }).setView([37.5665, 126.978], 16);
 const layers = VWORLD_KEY ? {
-  map: L.tileLayer(`https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Base/{z}/{y}/{x}.png`,
-    { maxZoom: 19, attribution: '© VWorld' }),
+  map: L.tileLayer(`https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Base/{z}/{y}/{x}.png`, { maxZoom: 19, attribution: '© VWorld' }),
   sat: L.layerGroup([
     L.tileLayer(`https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Satellite/{z}/{y}/{x}.jpeg`, { maxZoom: 19, attribution: '© VWorld' }),
     L.tileLayer(`https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Hybrid/{z}/{y}/{x}.png`, { maxZoom: 19 })
   ])
 } : {
-  map: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-    { maxZoom: 19, attribution: '© OpenStreetMap' }),
+  map: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }),
   sat: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     { maxZoom: 19, maxNativeZoom: 18, attribution: 'Esri, Maxar' })
 };
-const prefs = Object.assign({ target: 390, interval: 400, layer: 'sat' }, load('runPrefs'));
 let curLayer = null;
 function setLayer(name) {
   if (curLayer) map.removeLayer(curLayer);
   curLayer = layers[name].addTo(map);
-  prefs.layer = name; store('runPrefs', prefs);
+  prefs.layer = name; savePrefs();
   $('#bLayer').textContent = name === 'sat' ? '🗺 일반' : '🛰 위성';
 }
 setLayer(prefs.layer);
@@ -270,7 +394,7 @@ $('#bLayer').onclick = () => setLayer(prefs.layer === 'sat' ? 'map' : 'sat');
 const accCircle = L.circle([0, 0], { radius: 1, weight: 1, color: '#2563eb', fillOpacity: .12, interactive: false });
 const meDot = L.circleMarker([0, 0], { radius: 8, color: '#fff', weight: 3, fillColor: '#2563eb', fillOpacity: 1 });
 const routeGroup = L.layerGroup().addTo(map);
-let routeLines = {};      // 구간(seg)별 경로선
+let routeLines = {};
 let follow = true;
 map.on('dragstart', () => { follow = false; $('#bCenter').hidden = false; });
 $('#bCenter').onclick = () => {
@@ -292,18 +416,18 @@ function redrawRoute() {
 /* ===== 러닝 상태 =====
  * points: [위도, 경도, 누적운동시간ms, 누적거리m, 구간번호]
  */
-let run = null;
-let lastFix = null;
-let rejects = 0;
-
+let run = null, lastFix = null, rejects = 0;
 const moving = () => !run ? 0 : run.movingMs + (run.activeSince != null ? now() - run.activeSince : 0);
 
 function newRun(isDemo) {
   return {
     demo: isDemo, startedAt: now(), movingMs: 0, activeSince: now(),
     dist: 0, points: [], seg: 0,
-    target: prefs.target, interval: prefs.interval,
-    nextAlert: prefs.interval, lastSplitMs: 0, lastSplitDist: 0, splits: []
+    goal: prefs.goal, target: prefs.target, interval: prefs.interval,
+    warnEvery: prefs.warnEvery, tol: prefs.tol,
+    nextAlert: prefs.interval, lastSplitMs: 0, lastSplitDist: 0, splits: [],
+    goalMs: null,
+    warn: { cand: 'ok', candSince: 0, warned: 'ok', lastAt: -1e9 }
   };
 }
 
@@ -314,11 +438,9 @@ function onFix(lat, lon, acc) {
   if (!meDot._map) { meDot.addTo(map); accCircle.addTo(map); map.setView(ll, 17); }
   meDot.setLatLng(ll); accCircle.setLatLng(ll).setRadius(acc);
   if (follow) map.panTo(ll, { animate: true });
-
   const b = $('#gpsBadge');
   b.textContent = `📡 GPS ±${Math.round(acc)}m`;
   b.className = 'gpsbadge ' + (acc <= 15 ? 'good' : acc <= MAX_ACCURACY ? 'mid' : 'bad');
-
   if (run && run.activeSince != null) addPoint(lat, lon, acc);
 }
 
@@ -329,72 +451,101 @@ function addPoint(lat, lon, acc) {
   if (last && last[4] === run.seg) {
     const d = haversine(last[0], last[1], lat, lon);
     const dt = Math.max((mt - last[2]) / 1000, 1);
-    if (d < MIN_STEP) return;                                   // 제자리 떨림
-    if (d / dt > MAX_SPEED && ++rejects < 5) return;            // 순간이동(GPS 튐)
-    if (d / dt <= MAX_SPEED) run.dist += d;                     // 화면이 잠깐 꺼졌던 구간도 직선거리로 이어줌
+    if (d < MIN_STEP) return;
+    if (d / dt > MAX_SPEED && ++rejects < 5) return;
+    if (d / dt <= MAX_SPEED) run.dist += d;
     rejects = 0;
   }
   run.points.push([+lat.toFixed(6), +lon.toFixed(6), mt, run.dist, run.seg]);
   if (run.points.length === 1) redrawRoute(); else lineFor(run.seg).addLatLng([lat, lon]);
-  checkAlert();
+  const goalHit = checkGoal();
+  checkSplit(goalHit);
   saveSoon();
 }
 
 let watchId = null;
 function startGps() {
   if (!('geolocation' in navigator)) { showGpsErr('이 브라우저는 위치 기능을 지원하지 않아요.'); return; }
-  if (watchId != null) return;
   watchId = navigator.geolocation.watchPosition(
     p => { if (!demo) { $('#gpsErr').hidden = true; onFix(p.coords.latitude, p.coords.longitude, p.coords.accuracy); } },
     e => showGpsErr(e.code === 1
-      ? '위치 권한이 꺼져 있어요. 브라우저 주소창의 🔒 버튼 → 위치 → <b>허용</b>으로 바꿔 주세요.'
-      : 'GPS 신호를 찾고 있어요. 하늘이 잘 보이는 곳으로 나가 주세요.'),
+      ? '위치 권한이 꺼져 있어요. 브라우저 주소창의 🔒 버튼 → 위치 → <b>허용</b>으로 바꾼 뒤 새로고침해 주세요.'
+      : 'GPS 신호를 찾고 있어요. 하늘이 잘 보이는 곳으로 나가 주세요. (PC에서는 위치가 부정확할 수 있어요)'),
     { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 });
 }
 function showGpsErr(html) { const n = $('#gpsErr'); n.innerHTML = html; n.hidden = false; }
 
 /* ===== 페이스 계산 ===== */
-function recentSpeed() {             // 최근 20초 구간 속도 (m/s)
+function recentSpeed() {   // 최근 20초 속도 (m/s)
   const pts = run.points, mt = moving();
   if (!pts.length) return 0;
   const last = pts[pts.length - 1];
-  if (mt - last[2] > 10000) return 0;               // 10초 이상 이동 없음 → 멈춤
+  if (mt - last[2] > 10000) return 0;
   let i = pts.length - 1;
   while (i > 0 && pts[i - 1][4] === last[4] && last[2] - pts[i - 1][2] <= 20000) i--;
   const dt = (last[2] - pts[i][2]) / 1000;
   return dt >= 5 ? (last[3] - pts[i][3]) / dt : 0;
 }
 
-/* ===== 목표 페이스 음성 알림 ===== */
-function checkAlert() {
+/* ===== ① 목표 거리 완주 ===== */
+function checkGoal() {
+  if (run.goalMs != null || run.dist < run.goal) return false;
+  run.goalMs = moving();
+  const diff = Math.round((run.goalMs / 1000) - run.target * run.goal / 1000);
+  cue('finish', `목표 ${sayDist(run.goal)} 완주! 기록 ${sayTime(run.goalMs / 1000)}. ` +
+    (Math.abs(diff) <= 3 ? '목표 시간과 딱 맞았어요!' : diff < 0 ? `목표보다 ${-diff}초 빨랐어요. 최고예요!` : `목표보다 ${diff}초 늦었어요. 수고했어요!`));
+  return true;
+}
+
+/* ===== ② 구간 신호 (정해진 거리마다) ===== */
+function checkSplit(goalHit) {
   while (run.dist >= run.nextAlert) {
     const mt = moving();
-    const splitMs = mt - run.lastSplitMs;
-    const splitDist = run.dist - run.lastSplitDist;
+    const splitMs = mt - run.lastSplitMs, splitDist = run.dist - run.lastSplitDist;
     const pace = (splitMs / 1000) / (splitDist / 1000);
     const diff = Math.round(pace - run.target);
     run.splits.push({ at: run.nextAlert, dist: splitDist, ms: splitMs, pace, diff });
-
-    let msg = `${sayDist(run.nextAlert)}. 구간 페이스 ${sayPace(pace)}. `;
-    if (Math.abs(diff) <= 5) msg += '목표 페이스 딱 좋아요!';
-    else if (diff > 0) msg += `목표보다 ${diff}초 느려요. 조금만 더 힘내요!`;
-    else msg += `목표보다 ${-diff}초 빨라요. 페이스 조절하세요!`;
-    say(msg);
-    navigator.vibrate?.(diff > 5 ? [300, 120, 300] : [150]);
-
+    if (!goalHit) {
+      let msg = `${sayDist(run.nextAlert)}. 구간 페이스 ${sayTime(pace)}. `;
+      if (Math.abs(diff) <= run.tol) msg += '목표 페이스 좋아요.';
+      else msg += diff > 0 ? `목표보다 ${diff}초 느려요.` : `목표보다 ${-diff}초 빨라요.`;
+      cue('split', msg);
+    }
     run.lastSplitMs = mt; run.lastSplitDist = run.dist;
     run.nextAlert += run.interval;
   }
 }
 
-/* ===== 저장 (새로고침/실수로 닫아도 이어가기) ===== */
+/* ===== ③ 페이스 경고 (벗어났을 때만) ===== */
+function paceState(curPace) {
+  const d = curPace - run.target;
+  return d > run.tol ? 'slow' : d < -run.tol ? 'fast' : 'ok';
+}
+function checkWarn(curPace) {
+  if (!run.warnEvery || run.activeSince == null || run.goalMs != null) return;
+  const mt = moving(), w = run.warn;
+  if (mt < WARMUP_MS) return;
+  const st = paceState(curPace);
+  if (st !== w.cand) { w.cand = st; w.candSince = mt; }
+  if (Date.now() < quietUntil) return;                        // 다른 안내 중이면 대기
+  const held = mt - w.candSince;
+  if (st !== 'ok' && held >= HOLD_MS && (w.warned !== st || mt - w.lastAt >= run.warnEvery * 1000)) {
+    cue(st, st === 'slow' ? '조금 느려요. 속도를 올려요!' : '조금 빨라요. 속도를 줄여요.');
+    w.warned = st; w.lastAt = mt;
+  } else if (st === 'ok' && w.warned !== 'ok' && held >= 5000) {
+    cue('ok', '좋아요, 그 페이스!');
+    w.warned = 'ok';
+  }
+}
+
+/* ===== 저장 ===== */
 let saveTimer = null;
 function save() { if (run && !run.demo) store('runActive', Object.assign({}, run, { savedAt: Date.now() })); }
 function saveSoon() { if (!saveTimer) saveTimer = setTimeout(() => { saveTimer = null; save(); }, 3000); }
 document.addEventListener('visibilitychange', () => {
   if (!run) return;
   if (document.visibilityState === 'hidden') save();
-  else if (run.activeSince != null) keepScreenOn();   // 다른 앱 갔다 오면 다시 화면 유지
+  else if (run.activeSince != null) keepScreenOn();
 });
 
 /* ===== 화면 전환 ===== */
@@ -403,16 +554,60 @@ function show(id) {
   setTimeout(() => map.invalidateSize(), 50);
 }
 
-/* ===== 준비 화면 ===== */
-function renderPrefs() {
-  $('#tVal').textContent = fmtPace(prefs.target);
-  document.querySelectorAll('#segInt button').forEach(b => b.classList.toggle('on', +b.dataset.v === prefs.interval));
-  store('runPrefs', prefs);
+/* ===== 준비 화면: 목표 자동 계산 ===== */
+function renderPrefs(skip) {
+  const km = prefs.goal / 1000;
+  if (skip !== 'time') $('#inTime').value = msText(prefs.target * km);
+  if (skip !== 'pace') $('#inPace').value = msText(prefs.target);
+  if (skip !== 'speed') $('#inSpeed').value = (3600 / prefs.target).toFixed(1);
+  const presets = ['1000', '1600', '2000', '3000'];
+  $$('#segGoal button').forEach(b => b.classList.toggle('on',
+    b.dataset.v === String(prefs.goal) || (b.dataset.v === 'custom' && !presets.includes(String(prefs.goal)))));
+  $('#goalCustom').textContent = presets.includes(String(prefs.goal)) ? '직접' : `${fmtKm(prefs.goal)}km`;
+  $$('#segInt button').forEach(b => b.classList.toggle('on', +b.dataset.v === prefs.interval));
+  $$('#segWarn button').forEach(b => b.classList.toggle('on', +b.dataset.v === prefs.warnEvery));
+  $$('#segTol button').forEach(b => b.classList.toggle('on', +b.dataset.v === prefs.tol));
+  $$('#segSet button').forEach(b => b.classList.toggle('on', b.dataset.v === prefs.set));
+  $('#calcTxt').innerHTML = `<b>${fmtKm(prefs.goal)}km</b>를 <b>${fmtPace(prefs.target)}</b> 페이스로 → ` +
+    `<b>${fmtTime(prefs.target * km * 1000)}</b> 완주 · 200m당 <b>${Math.round(prefs.target / 5)}초</b>`;
+  savePrefs();
 }
-$('#tMinus').onclick = () => { prefs.target = Math.max(180, prefs.target - 5); renderPrefs(); };
-$('#tPlus').onclick = () => { prefs.target = Math.min(720, prefs.target + 5); renderPrefs(); };
-document.querySelectorAll('#segInt button').forEach(b => b.onclick = () => { prefs.interval = +b.dataset.v; renderPrefs(); });
+function setTarget(paceSec, skip) {
+  if (!isFinite(paceSec) || paceSec <= 0) { renderPrefs(); return; }
+  prefs.target = Math.round(Math.min(900, Math.max(150, paceSec)));
+  renderPrefs(skip);
+}
+// 직접 입력 → 나머지 자동 계산
+$('#inTime').addEventListener('change', e => setTarget(parseMS(e.target.value) / (prefs.goal / 1000)));
+$('#inPace').addEventListener('change', e => setTarget(parseMS(e.target.value)));
+$('#inSpeed').addEventListener('change', e => setTarget(3600 / parseFloat(e.target.value)));
+$$('.field input').forEach(i => {
+  i.addEventListener('keydown', e => { if (e.key === 'Enter') i.blur(); });
+  i.addEventListener('focus', () => i.select());
+});
+// +/- 버튼
+$$('.field button').forEach(b => b.onclick = () => {
+  const d = +b.dataset.d, km = prefs.goal / 1000;
+  if (b.dataset.k === 'pace') setTarget(prefs.target + d);
+  if (b.dataset.k === 'time') setTarget((Math.round(prefs.target * km / 10) * 10 + d) / km);
+  if (b.dataset.k === 'speed') setTarget(3600 / (Math.round(36000 / prefs.target) / 10 + d));
+});
+$$('#segGoal button').forEach(b => b.onclick = () => {
+  if (b.dataset.v === 'custom') {
+    const v = parseFloat(prompt('목표 거리를 km로 입력하세요 (예: 2.5)', fmtKm(prefs.goal)));
+    if (!(v > 0 && v <= 42.195)) return;
+    prefs.goal = Math.round(v * 1000);
+  } else prefs.goal = +b.dataset.v;
+  renderPrefs();
+});
+$$('#segInt button').forEach(b => b.onclick = () => { prefs.interval = +b.dataset.v; renderPrefs(); });
+$$('#segWarn button').forEach(b => b.onclick = () => { prefs.warnEvery = +b.dataset.v; renderPrefs(); });
+$$('#segTol button').forEach(b => b.onclick = () => { prefs.tol = +b.dataset.v; renderPrefs(); });
+$$('#segSet button').forEach(b => b.onclick = () => { prefs.set = b.dataset.v; renderPrefs(); sound('slow'); });
+$$('.preview button').forEach(b => b.onclick = () => sound(b.dataset.p));
 renderPrefs();
+
+function unlockAudio() { try { ac(); tone(440, 0, .01, 'sine', .0002); } catch {} }   // iOS: 터치할 때 소리 활성화
 
 function beginTracking() {
   keepScreenOn();
@@ -420,17 +615,21 @@ function beginTracking() {
   follow = true; $('#bCenter').hidden = true;
   updatePauseBtn();
 }
+function startMsg() {
+  return `러닝을 시작합니다. 목표 ${sayDist(run.goal)}, ${sayTime(run.target * run.goal / 1000)}. 페이스 ${sayTime(run.target)}. 화이팅!`;
+}
 
 $('#bStart').onclick = () => {
   if (!lastFix && !confirm('아직 GPS 신호가 잡히지 않았어요. 그래도 출발할까요?')) return;
+  unlockAudio();
   run = newRun(false); rejects = 0;
   redrawRoute();
-  say(`러닝을 시작합니다. 목표 페이스 ${sayPace(run.target)}. 화이팅!`);  // iOS: 버튼 누를 때 음성 활성화
+  say(startMsg());
   if (lastFix) addPoint(lastFix.lat, lastFix.lon, lastFix.acc);
   beginTracking(); save();
 };
 
-/* ===== 데모 (400m 트랙을 가상으로 달림, 10배속) ===== */
+/* ===== 데모: 400m 트랙 가상 러닝 (10배속, 일부러 빨라졌다 느려졌다 함) ===== */
 function trackPos(c, s) {
   const L = 84.39, r = (400 - 2 * L) / (2 * Math.PI);
   s = ((s % 400) + 400) % 400;
@@ -442,28 +641,29 @@ function trackPos(c, s) {
   return [c[0] + y / 111320, c[1] + x / (111320 * Math.cos(c[0] * Math.PI / 180))];
 }
 $('#bDemo').onclick = () => {
+  unlockAudio();
   const c = lastFix ? [lastFix.lat, lastFix.lon] : [map.getCenter().lat, map.getCenter().lng];
   demo = { t: Date.now(), s: 0, c };
   run = newRun(true); rejects = 0; redrawRoute();
-  say(`데모 러닝을 시작합니다. 목표 페이스 ${sayPace(run.target)}.`);
+  say('데모 ' + startMsg());
   beginTracking();
   map.setView(trackPos(c, 0), 17);
+  const base = 1000 / run.target;   // 목표 속도 (m/s)
   demo.timer = setInterval(() => {
     if (!run) return;
     demo.t += 1000;
     if (run.activeSince == null) return;
-    demo.s += 2.55 + 0.35 * Math.sin(demo.t / 50000) + (Math.random() - .5) * .3;  // 약 6분~7분 페이스
+    demo.s += base * (1 + 0.09 * Math.sin(demo.t / 45000)) + (Math.random() - .5) * .2;
     const [lat, lon] = trackPos(c, demo.s);
     onFix(lat + (Math.random() - .5) * 1.5e-5, lon + (Math.random() - .5) * 1.5e-5, 5);
   }, 100);
 };
 function stopDemo() { if (demo) { clearInterval(demo.timer); demo = null; } }
 
-/* ===== 러닝 화면 ===== */
+/* ===== 러닝 화면 갱신 ===== */
 function render() {
   if (!run || $('#runPanel').hidden) return;
-  const mt = moving();
-  const km = run.dist / 1000;
+  const mt = moving(), km = run.dist / 1000;
   const sp = recentSpeed();
   const curPace = sp > 0.5 ? 1000 / sp : Infinity;
   const avgPace = run.dist > 50 ? (mt / 1000) / km : Infinity;
@@ -474,16 +674,37 @@ function render() {
   $('#vAvg').textContent = fmtPace(avgPace);
   $('#vSpeed').textContent = (sp * 3.6).toFixed(1);
 
-  const t = $('#vTarget');
+  // 목표 진행
+  const pct = Math.min(100, run.dist / run.goal * 100);
+  $('#gFill').style.width = pct + '%';
+  $('#gBar').classList.toggle('done', run.goalMs != null);
+  $('#gProg').textContent = run.goalMs != null
+    ? `🏁 ${fmtKm(run.goal)}km 완주 ${fmtTime(run.goalMs)}`
+    : `${km.toFixed(2)} / ${fmtKm(run.goal)}km`;
+  const ahead = Math.round(run.target * km - mt / 1000);    // +면 목표보다 앞섬
+  const eta = $('#gEta');
+  if (run.goalMs == null && run.dist > 100) {
+    eta.innerHTML = `예상 ${fmtTime(avgPace * run.goal)} · ` +
+      (Math.abs(ahead) <= 3 ? '목표와 같아요' : ahead > 0
+        ? `<span class="ahead">${ahead}초 앞섬</span>` : `<span class="behind">${-ahead}초 뒤처짐</span>`);
+  } else eta.textContent = run.goalMs == null ? `목표 ${fmtTime(run.target * run.goal)}` : '';
+
+  // 현재 페이스 상태
+  const t = $('#vTarget'), ls = $('#lState');
   const left = Math.max(0, Math.round(run.nextAlert - run.dist));
-  if (run.activeSince == null) { t.className = 'target'; t.textContent = '⏸ 일시정지 중'; }
-  else if (!isFinite(curPace)) { t.className = 'target'; t.textContent = `목표 ${fmtPace(run.target)} · 다음 알림까지 ${left}m`; }
+  let cls = '', txt;
+  if (run.activeSince == null) txt = '⏸ 일시정지 중';
+  else if (!isFinite(curPace)) txt = `목표 페이스 ${fmtPace(run.target)} · 다음 알림까지 ${left}m`;
   else {
+    cls = paceState(curPace);
     const d = Math.round(curPace - run.target);
-    t.className = 'target ' + (Math.abs(d) <= 5 ? 'ok' : d > 0 ? 'slow' : 'fast');
-    t.textContent = (Math.abs(d) <= 5 ? '👍 목표 페이스 유지 중' : d > 0 ? `🐢 목표보다 ${d}초 느림` : `🐇 목표보다 ${-d}초 빠름`)
+    txt = (cls === 'ok' ? '👍 목표 페이스 유지 중' : cls === 'slow' ? `🐢 ${d}초 느림 · 속도 올려요` : `🐇 ${-d}초 빠름 · 속도 줄여요`)
       + ` · 알림까지 ${left}m`;
   }
+  t.className = 'target ' + cls; t.textContent = txt;
+  ls.className = cls; ls.textContent = cls === 'slow' ? '🐢 속도 올려요' : cls === 'fast' ? '🐇 속도 줄여요' : cls === 'ok' ? '👍 좋아요' : '';
+
+  checkWarn(curPace);
 }
 setInterval(render, 250);
 
@@ -497,14 +718,15 @@ $('#bPause').onclick = () => {
     run.movingMs += now() - run.activeSince; run.activeSince = null;
     say('일시정지');
   } else {
-    run.activeSince = now(); run.seg++;   // 쉬는 동안 걸은 거리는 넣지 않도록 새 구간 시작
+    run.activeSince = now(); run.seg++;
+    run.warn.cand = 'ok'; run.warn.candSince = moving();
     say('다시 출발!');
     if (lastFix && !run.demo) addPoint(lastFix.lat, lastFix.lon, lastFix.acc);
   }
   updatePauseBtn(); render(); save();
 };
 
-/* 잠금: 1.2초 길게 눌러야 풀림 */
+/* 잠금 */
 $('#bLock').onclick = () => { $('#lock').hidden = false; };
 let holdTimer = null;
 const hold = $('#hold');
@@ -521,19 +743,18 @@ $('#lock').addEventListener('contextmenu', e => e.preventDefault());
 $('#bEnd').onclick = () => {
   if (!confirm('러닝을 끝낼까요?')) return;
   if (run.activeSince != null) { run.movingMs += now() - run.activeSince; run.activeSince = null; }
-  // 마지막 남은 구간도 기록
   const restDist = run.dist - run.lastSplitDist;
   if (restDist >= 50) {
     const ms = run.movingMs - run.lastSplitMs, pace = (ms / 1000) / (restDist / 1000);
     run.splits.push({ at: run.dist, dist: restDist, ms, pace, diff: Math.round(pace - run.target), partial: true });
   }
   stopDemo(); releaseScreen();
+  speechSynthesis?.cancel();
   const km = run.dist / 1000, avg = km > 0 ? (run.movingMs / 1000) / km : Infinity;
-  say(`수고했어요! 총 ${sayDist(Math.round(run.dist))}, ${fmtTime(run.movingMs).replace(':', '분 ')}초, 평균 페이스 ${isFinite(avg) ? sayPace(avg) : '기록 없음'}.`);
-
+  say(`수고했어요! 총 ${sayDist(Math.round(run.dist))}, ${sayTime(run.movingMs / 1000)}. 평균 페이스 ${isFinite(avg) ? sayTime(avg) : '기록 없음'}.`);
   if (!run.demo) {
     const hist = load('runHistory') || [];
-    hist.unshift({ date: run.startedAt, dist: run.dist, ms: run.movingMs, target: run.target, splits: run.splits });
+    hist.unshift({ date: run.startedAt, dist: run.dist, ms: run.movingMs, goal: run.goal, goalMs: run.goalMs, target: run.target, splits: run.splits });
     store('runHistory', hist.slice(0, 30));
   }
   unstore('runActive');
@@ -542,13 +763,24 @@ $('#bEnd').onclick = () => {
 
 function showSummary() {
   const km = run.dist / 1000;
+  const goalSec = run.target * run.goal / 1000;
+  const r = $('#sResult');
+  if (run.goalMs != null) {
+    const diff = Math.round(run.goalMs / 1000 - goalSec);
+    r.className = 'result ' + (diff <= 3 ? 'good' : 'bad');
+    r.innerHTML = `🏁 목표 ${fmtKm(run.goal)}km 완주! 기록 <b>${fmtTime(run.goalMs)}</b> (목표 ${fmtTime(goalSec * 1000)})<br>` +
+      (Math.abs(diff) <= 3 ? '목표 시간과 딱 맞았어요 👏' : diff < 0 ? `목표보다 ${-diff}초 빨랐어요 🎉` : `목표보다 ${diff}초 늦었어요. 다음엔 할 수 있어요 💪`);
+  } else {
+    r.className = 'result none';
+    r.textContent = `목표 ${fmtKm(run.goal)}km까지 ${Math.max(0, (run.goal - run.dist) / 1000).toFixed(2)}km 남았어요.`;
+  }
   $('#sDist').textContent = km.toFixed(2);
   $('#sTime').textContent = fmtTime(run.movingMs);
   $('#sPace').textContent = fmtPace(km > 0 ? (run.movingMs / 1000) / km : Infinity);
   $('#sSpeed').textContent = run.movingMs ? (run.dist / (run.movingMs / 1000) * 3.6).toFixed(1) : '0.0';
   $('#sSplits').innerHTML = run.splits.map((s, i) => {
-    const cls = Math.abs(s.diff) <= 5 ? 'ok' : s.diff > 0 ? 'slow' : 'fast';
-    const dtxt = Math.abs(s.diff) <= 5 ? '👍' : (s.diff > 0 ? `+${s.diff}초` : `${s.diff}초`);
+    const cls = Math.abs(s.diff) <= run.tol ? 'ok' : s.diff > 0 ? 'slow' : 'fast';
+    const dtxt = Math.abs(s.diff) <= run.tol ? '👍' : (s.diff > 0 ? `+${s.diff}초` : `${s.diff}초`);
     return `<tr><td>${i + 1}${s.partial ? ' (마지막)' : ''}</td><td>${Math.round(s.dist)}m</td>
       <td>${fmtTime(s.ms)}</td><td>${fmtPace(s.pace)}</td><td class="${cls}">${dtxt}</td></tr>`;
   }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--mut)">구간 기록이 없어요</td></tr>';
@@ -566,11 +798,12 @@ $('#bAgain').onclick = () => {
 
 /* ===== 진행 중이던 러닝 복구 ===== */
 const saved = load('runActive');
-if (saved && Date.now() - saved.savedAt < 3 * 3600 * 1000) {
+if (saved && saved.warn && Date.now() - saved.savedAt < 3 * 3600 * 1000) {
   $('#resumeBox').hidden = false;
   const mt = saved.movingMs + (saved.activeSince != null ? Date.now() - saved.activeSince : 0);
   $('#resumeInfo').textContent = `${(saved.dist / 1000).toFixed(2)}km · ${fmtTime(mt)}`;
   $('#bResume').onclick = () => {
+    unlockAudio();
     run = saved; delete run.savedAt;
     redrawRoute(); $('#resumeBox').hidden = true;
     say('러닝을 이어갑니다.');
