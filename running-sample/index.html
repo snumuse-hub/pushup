@@ -138,6 +138,44 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
 #hold i{position:absolute;inset:0;width:0;background:rgba(249,115,22,.7);z-index:-1}
 #hold.holding i{width:100%;transition:width 1.2s linear}
 
+/* 결과 화면: 사진/영상 버튼 */
+.share-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.share-btns button{padding:14px 8px;border-radius:14px;font-weight:800;font-size:16px;background:var(--ink);color:#fff}
+.share-btns button+button{background:var(--blue)}
+.legend{margin-top:8px;font-size:13px;color:var(--mut);text-align:center}
+
+/* 사진·영상 만들기 화면 */
+#studio{position:fixed;inset:0;z-index:3500;background:#0b1220;display:flex;flex-direction:column}
+#studio[hidden]{display:none}
+.st-head{display:flex;align-items:center;justify-content:space-between;padding:calc(10px + env(safe-area-inset-top)) 14px 8px;color:#fff}
+.st-head b{font-size:17px}
+.st-head button{color:#fff;font-size:22px;width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.12)}
+.st-stage{position:relative;flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;padding:4px 12px 10px}
+#stCanvas{display:block;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.5);touch-action:none;background:#1e293b}
+#stMsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;pointer-events:none;text-shadow:0 1px 4px #000}
+#stMsg[hidden]{display:none}
+.st-tools{flex:0 0 auto;background:#fff;border-radius:20px 20px 0 0;padding:12px 14px calc(12px + env(safe-area-inset-bottom));max-height:46dvh;overflow:auto;overscroll-behavior:contain}
+.st-row{display:flex;align-items:center;gap:8px;padding:6px 0;flex-wrap:wrap}
+.st-row>span{font-size:13px;font-weight:700;color:var(--mut);width:46px;flex:0 0 auto}
+.st-row[hidden]{display:none}
+.st-btn{padding:8px 12px;border-radius:10px;background:var(--bg);font-weight:700;font-size:14px}
+.st-emojis{display:flex;flex-wrap:wrap;gap:4px;padding:2px 0 6px 54px}
+.st-emojis button{font-size:24px;width:42px;height:42px;border-radius:10px;background:var(--bg)}
+#stSel{background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:8px}
+#stSelText{flex:1 1 140px;min-width:0;height:38px;border:1.5px solid var(--line);border-radius:10px;padding:0 10px;font-size:16px;font-weight:700}
+#stSelText[hidden]{display:none}
+.st-hint{font-size:12px;color:var(--mut);text-align:center;padding:2px 0 4px}
+#stPlay{width:44px;height:40px;border-radius:10px;background:var(--ink);color:#fff;font-size:16px;font-weight:800;flex:0 0 auto}
+#stSeek{flex:1 1 120px;accent-color:var(--acc)}
+#stSave{margin-top:8px}
+#stSave:disabled{opacity:.5}
+@media (min-width:900px){
+  #studio{flex-direction:row;flex-wrap:wrap}
+  .st-head{width:100%}
+  .st-stage{flex:1 1 0;height:calc(100dvh - 60px)}
+  .st-tools{width:400px;max-height:calc(100dvh - 60px);border-radius:20px 0 0 0}
+}
+
 /* PC 넓은 화면: 지도 왼쪽, 패널 오른쪽 */
 @media (min-width:900px){
   body{flex-direction:row}
@@ -234,6 +272,8 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
 <section id="summary" class="panel" hidden>
   <div class="toprow"><h1>🎉 수고했어요!</h1><button class="toSetup">⚙️ 처음 설정으로</button></div>
   <div id="sResult" class="result"></div>
+  <div class="share-btns"><button id="bPhoto">📷 사진 만들기</button><button id="bVideo">🎬 경로 영상</button></div>
+  <div class="legend">경로 색: 🟢 목표 페이스 · 🔴 느림 · 🔵 빠름</div>
   <div class="grid">
     <div><label>거리</label><b id="sDist" class="num"></b><small>km</small></div>
     <div><label>운동시간</label><b id="sTime" class="num"></b></div>
@@ -256,6 +296,33 @@ td.slow{color:var(--slow);font-weight:700} td.fast{color:var(--fast);font-weight
     <button class="m1" id="mStop">⏹ 기록 멈추고 결과 보기</button>
     <button class="m2" id="mResume">▶ 이어서 달리기</button>
     <button class="m3" id="mDiscard">기록 지우고 처음 설정으로</button>
+  </div>
+</div>
+
+<!-- 사진·영상 만들기 -->
+<div id="studio" hidden>
+  <div class="st-head"><b id="stTitle">📷 사진 만들기</b><button id="stClose" aria-label="닫기">✕</button></div>
+  <div class="st-stage"><canvas id="stCanvas"></canvas><div id="stMsg">지도 불러오는 중…</div></div>
+  <div class="st-tools">
+    <div class="st-row" id="stPlayRow" hidden>
+      <button id="stPlay">▶</button>
+      <input type="range" id="stSeek" min="0" max="1000" value="0">
+      <div class="seg" id="stSpeed"><button data-v="1">1x</button><button data-v="2">2x</button><button data-v="4">4x</button></div>
+    </div>
+    <div class="st-row"><span>비율</span>
+      <div class="seg" id="stRatio"><button data-v="9:16">세로 9:16</button><button data-v="1:1">정사각 1:1</button></div>
+    </div>
+    <div class="st-row"><span>꾸미기</span>
+      <button class="st-btn" id="stAddName">＋ 이름</button><button class="st-btn" id="stAddText">＋ 문구</button>
+    </div>
+    <div class="st-emojis" id="stEmojis"></div>
+    <div class="st-row" id="stSel" hidden>
+      <input id="stSelText" placeholder="글자를 입력하세요" maxlength="30">
+      <button class="st-btn" data-z="-1">작게</button><button class="st-btn" data-z="1">크게</button>
+      <button class="st-btn" id="stSelStyle">스타일</button><button class="st-btn" id="stDel">🗑</button>
+    </div>
+    <div class="st-hint">사진 위 항목(기록 카드·글자·이모티콘)을 끌어서 위치를 옮길 수 있어요</div>
+    <button id="stSave" class="big">💾 사진 저장</button>
   </div>
 </div>
 
@@ -852,12 +919,428 @@ function showSummary() {
     return `<tr><td>${i + 1}${s.partial ? ' (마지막)' : ''}</td><td>${Math.round(s.dist)}m</td>
       <td>${fmtTime(s.ms)}</td><td>${fmtPace(s.pace)}</td><td class="${cls}">${dtxt}</td></tr>`;
   }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--mut)">구간 기록이 없어요</td></tr>';
+  drawColoredRoute();
   show('summary');
   const pts = run.points.map(p => [p[0], p[1]]);
   if (pts.length > 1) setTimeout(() => { follow = false; map.fitBounds(L.latLngBounds(pts), { padding: [30, 30] }); }, 100);
 }
 
+/* ===== 페이스별 경로 색 ===== */
+const PACE_COL = { ok: '#22c55e', slow: '#ef4444', fast: '#3b82f6' };
+function computePaces(r) {   // 각 지점의 앞뒤 10초 페이스 → 상태
+  const pts = r.points, n = pts.length, pace = new Array(n).fill(Infinity), st = new Array(n).fill('ok');
+  for (let i = 0; i < n; i++) {
+    let a = i, b = i;
+    while (a > 0 && pts[a - 1][4] === pts[i][4] && pts[i][2] - pts[a - 1][2] <= 10000) a--;
+    while (b < n - 1 && pts[b + 1][4] === pts[i][4] && pts[b + 1][2] - pts[i][2] <= 10000) b++;
+    const dd = pts[b][3] - pts[a][3], dt = (pts[b][2] - pts[a][2]) / 1000;
+    pace[i] = dd > 1 && dt >= 3 ? dt / (dd / 1000) : (i > 0 ? pace[i - 1] : Infinity);
+    const d = pace[i] - r.target;
+    st[i] = !isFinite(pace[i]) ? 'ok' : d > r.tol ? 'slow' : d < -r.tol ? 'fast' : 'ok';
+  }
+  return { pace, st };
+}
+function drawColoredRoute() {
+  routeGroup.clearLayers(); routeLines = {};
+  const pts = run.points;
+  if (pts.length < 2) { redrawRoute(); return; }
+  const { st } = computePaces(run);
+  let line = null, cur = null;
+  for (let i = 1; i < pts.length; i++) {
+    if (pts[i][4] !== pts[i - 1][4]) { line = null; continue; }
+    if (!line || st[i] !== cur) {
+      cur = st[i];
+      line = L.polyline([[pts[i - 1][0], pts[i - 1][1]]], { color: PACE_COL[cur], weight: 6, opacity: .95, lineCap: 'round' }).addTo(routeGroup);
+    }
+    line.addLatLng([pts[i][0], pts[i][1]]);
+  }
+  const f = pts[0], e = pts[pts.length - 1];
+  L.circleMarker([f[0], f[1]], { radius: 7, color: '#0f172a', weight: 3, fillColor: '#fff', fillOpacity: 1 }).bindTooltip('출발').addTo(routeGroup);
+  L.circleMarker([e[0], e[1]], { radius: 7, color: '#fff', weight: 3, fillColor: '#0f172a', fillOpacity: 1 }).bindTooltip('도착').addTo(routeGroup);
+}
+
+/* ===== 사진·영상 만들기 ===== */
+const EMOJIS = ['🏃', '🏃‍♀️', '🔥', '💪', '👍', '🎉', '⭐', '🏅', '🥇', '😊', '😎', '💯', '❤️', '🌈', '☀️', '🏫'];
+const studio = { mode: 'photo', ratio: '9:16', els: [], sel: null, base: null, p: 0, speed: 1, playing: false, recording: false, videoBlob: null, data: null };
+const cv = $('#stCanvas'), cx = cv.getContext('2d');
+const FONT = '-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif';
+const setFont = (c, size, w = 700) => { c.font = `${w} ${Math.round(size)}px ${FONT}`; };
+function rr(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+
+// 지도 타일 (사진으로 구울 수 있게 CORS 허용 서버만)
+const TILE_SRC = {
+  vsat: { urls: (z, x, y) => [VW('Satellite', 'jpeg'), VW('Hybrid', 'png')].map(u => u.replace('{z}', z).replace('{y}', y).replace('{x}', x)), max: 19, attr: '© 국토교통부 브이월드', need: true },
+  vmap: { urls: (z, x, y) => [VW('Base', 'png').replace('{z}', z).replace('{y}', y).replace('{x}', x)], max: 19, attr: '© 국토교통부 브이월드', need: true },
+  sat: { urls: (z, x, y) => [`https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}`], max: 18, attr: 'Esri, Maxar' },
+  map: { urls: (z, x, y) => [`https://tile.openstreetmap.org/${z}/${x}/${y}.png`], max: 19, attr: '© OpenStreetMap' }
+};
+const imgCache = {};
+function loadImg(url) {
+  return imgCache[url] ||= new Promise((res, rej) => {
+    const im = new Image(); im.crossOrigin = 'anonymous';
+    const to = setTimeout(() => rej(new Error('timeout')), 9000);
+    im.onload = () => { clearTimeout(to); res(im); };
+    im.onerror = () => { clearTimeout(to); delete imgCache[url]; rej(new Error('load')); };
+    im.src = url;
+  });
+}
+const wxOf = lon => (lon + 180) / 360 * 256;
+const wyOf = lat => { const s = Math.sin(lat * Math.PI / 180); return (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * 256; };
+
+function canvasSize() {
+  const big = studio.mode === 'photo' ? 1080 : 720;
+  return studio.ratio === '9:16' ? [big, Math.round(big * 16 / 9)] : [big, big];
+}
+async function buildBase() {
+  const [W, H] = canvasSize();
+  const pts = run.points;
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  for (const p of pts) { const x = wxOf(p[1]), y = wyOf(p[0]); x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+  // 기록 카드 자리를 피해서 경로가 들어갈 영역
+  const pad = W * 0.12;
+  const box = studio.ratio === '9:16' ? [pad, H * 0.08, W - pad, H * 0.66] : [pad, H * 0.07, W - pad, H * 0.6];
+  const bw = box[2] - box[0], bh = box[3] - box[1];
+  let zf = Math.log2(Math.min(bw / Math.max(x1 - x0, 1e-9), bh / Math.max(y1 - y0, 1e-9)));
+  zf = Math.max(3, Math.min(zf, 19.2));
+  const bx = (box[0] + box[2]) / 2, by = (box[1] + box[3]) / 2;
+  const cxw = (x0 + x1) / 2, cyw = (y0 + y1) / 2;
+  const proj = (lat, lon) => [(wxOf(lon) - cxw) * 2 ** zf + bx, (wyOf(lat) - cyw) * 2 ** zf + by];
+
+  const base = document.createElement('canvas'); base.width = W; base.height = H;
+  const b = base.getContext('2d');
+  const order = [...new Set([prefs.layer, 'sat', 'map'])].filter(k => TILE_SRC[k] && (!TILE_SRC[k].need || VWORLD_KEY));
+  let attr = '';
+  for (const key of order) {
+    const src = TILE_SRC[key];
+    const zi = Math.max(1, Math.min(src.max, Math.round(zf)));
+    const sc = 2 ** (zf - zi);
+    const CX = cxw * 2 ** zi, CY = cyw * 2 ** zi;
+    const left = CX - bx / sc, top = CY - by / sc, right = CX + (W - bx) / sc, bottom = CY + (H - by) / sc;
+    const n = 2 ** zi, jobs = [];
+    for (let tx = Math.floor(left / 256); tx <= Math.floor(right / 256); tx++)
+      for (let ty = Math.max(0, Math.floor(top / 256)); ty <= Math.min(n - 1, Math.floor(bottom / 256)); ty++)
+        jobs.push(Promise.all(src.urls(zi, ((tx % n) + n) % n, ty).map(loadImg)).then(imgs => ({ tx, ty, imgs })));
+    try {
+      const tiles = await Promise.all(jobs);
+      b.clearRect(0, 0, W, H);
+      for (const t of tiles) for (const im of t.imgs)
+        b.drawImage(im, Math.floor((t.tx * 256 - CX) * sc + bx), Math.floor((t.ty * 256 - CY) * sc + by), Math.ceil(256 * sc) + 1, Math.ceil(256 * sc) + 1);
+      b.getImageData(0, 0, 1, 1);   // 사진으로 저장 가능한지 확인 (막히면 다음 지도)
+      attr = src.attr; break;
+    } catch (e) { b.clearRect(0, 0, W, H); }
+  }
+  if (!attr) {   // 지도를 못 받으면 단색 배경
+    const g = b.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#1e293b'); g.addColorStop(1, '#0f172a');
+    b.fillStyle = g; b.fillRect(0, 0, W, H);
+  }
+  // 글자가 잘 보이도록 위아래를 살짝 어둡게
+  const g1 = b.createLinearGradient(0, 0, 0, H);
+  g1.addColorStop(0, 'rgba(0,0,0,.28)'); g1.addColorStop(.22, 'rgba(0,0,0,0)'); g1.addColorStop(.6, 'rgba(0,0,0,0)'); g1.addColorStop(1, 'rgba(0,0,0,.4)');
+  b.fillStyle = g1; b.fillRect(0, 0, W, H);
+  if (attr) { setFont(b, W * 0.018, 600); b.fillStyle = 'rgba(255,255,255,.8)'; b.textAlign = 'right'; b.textBaseline = 'top'; b.fillText(attr, W - W * 0.02, W * 0.015); }
+  studio.base = base;
+  const { pace, st } = computePaces(run);
+  studio.data = { W, H, pc: pts.map(p => proj(p[0], p[1])), pace, st, T: pts[pts.length - 1][2] || 1 };
+  studio.D = Math.max(12, Math.min(30, studio.data.T / 1000 / 40));   // 영상 길이(초) @1x
+}
+
+// 경로 그리기 (upto: 지점 인덱스, 소수점은 중간 위치)
+function drawRoute(c, upto) {
+  const { W, pc, st } = studio.data, pts = run.points, lw = W * 0.012;
+  const last = Math.max(0, Math.min(upto, pts.length - 1)), li = Math.floor(last), fr = last - li;
+  const at = (i, f) => f ? [pc[i][0] + (pc[i + 1][0] - pc[i][0]) * f, pc[i][1] + (pc[i + 1][1] - pc[i][1]) * f] : pc[i];
+  const same = i => pts[i][4] === pts[i - 1][4];
+  c.lineCap = 'round'; c.lineJoin = 'round';
+  if (upto < pts.length - 1) {   // 아직 안 간 길: 흐리게
+    c.beginPath();
+    for (let i = 0; i < pts.length; i++) (i && same(i)) ? c.lineTo(...pc[i]) : c.moveTo(...pc[i]);
+    c.strokeStyle = 'rgba(255,255,255,.38)'; c.lineWidth = lw * 0.7; c.stroke();
+  }
+  const segs = [];   // 지나온 길: 색이 같은 구간끼리
+  for (let i = 1; i <= li + (fr ? 1 : 0) && i < pts.length; i++) {
+    if (!same(i)) continue;
+    const p0 = pc[i - 1], p1 = i > li ? at(li, fr) : pc[i];
+    const prev = segs[segs.length - 1];
+    if (prev && prev.c === st[i] && prev.end === i - 1) { prev.pts.push(p1); prev.end = i; }
+    else segs.push({ c: st[i], pts: [p0, p1], end: i });
+  }
+  c.strokeStyle = 'rgba(255,255,255,.95)'; c.lineWidth = lw * 1.7;
+  for (const s of segs) { c.beginPath(); c.moveTo(...s.pts[0]); s.pts.slice(1).forEach(p => c.lineTo(...p)); c.stroke(); }
+  c.lineWidth = lw;
+  for (const s of segs) { c.strokeStyle = PACE_COL[s.c]; c.beginPath(); c.moveTo(...s.pts[0]); s.pts.slice(1).forEach(p => c.lineTo(...p)); c.stroke(); }
+  // 출발점
+  c.beginPath(); c.arc(...pc[0], lw * 1.2, 0, 7); c.fillStyle = '#fff'; c.fill(); c.lineWidth = lw * 0.5; c.strokeStyle = '#0f172a'; c.stroke();
+  return at(li, li < pts.length - 1 ? fr : 0);
+}
+
+function drawCard(c, el, W, H, s, live) {
+  const cw = Math.min(W, H) * 0.84 * el.s, u = cw / 100, pad = 6 * u;
+  const h = pad * 2 + 3.6 * u + 2 * u + 13 * u + 3 * u + 4 * u + 6.5 * u + 3 * u + 3.4 * u;
+  const x = el.fx * W - cw / 2, y = el.fy * H - h / 2;
+  c.save(); c.shadowColor = 'rgba(0,0,0,.3)'; c.shadowBlur = 4 * u; c.shadowOffsetY = u;
+  rr(c, x, y, cw, h, 5 * u); c.fillStyle = 'rgba(255,255,255,.95)'; c.fill(); c.restore();
+  c.textBaseline = 'top'; c.textAlign = 'left';
+  let yy = y + pad;
+  const d = new Date(run.startedAt), days = '일월화수목금토';
+  const date = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')} (${days[d.getDay()]}) ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  setFont(c, 3.4 * u, 600); c.fillStyle = '#64748b'; c.fillText(date, x + pad, yy);
+  c.textAlign = 'right'; setFont(c, 3.4 * u, 800); c.fillStyle = '#f97316'; c.fillText('자유학교 러닝', x + cw - pad, yy);
+  c.textAlign = 'left'; yy += 5.6 * u;
+  setFont(c, 13 * u, 800); c.fillStyle = '#0f172a';
+  const dt = (s.dist / 1000).toFixed(2); c.fillText(dt, x + pad, yy);
+  const dw = c.measureText(dt).width; setFont(c, 5 * u, 700); c.fillStyle = '#64748b'; c.fillText('km', x + pad + dw + 1.5 * u, yy + 6.8 * u);
+  yy += 16 * u;
+  const cols = [['시간', fmtTime(s.ms)], ['평균 페이스', fmtPace(s.avg)], live ? ['현재 페이스', fmtPace(s.cur)] : ['평균 속도', `${s.speed.toFixed(1)} km/h`]];
+  const colW = (cw - pad * 2) / 3;
+  cols.forEach(([lab, val], i) => {
+    const xx = x + pad + i * colW;
+    setFont(c, 3 * u, 600); c.fillStyle = '#64748b'; c.fillText(lab, xx, yy);
+    setFont(c, 6 * u, 800); c.fillStyle = '#0f172a'; c.fillText(val, xx, yy + 4 * u);
+  });
+  yy += 13.5 * u;
+  setFont(c, 3 * u, 600); let lx = x + pad;
+  [['목표 페이스', PACE_COL.ok], ['느림', PACE_COL.slow], ['빠름', PACE_COL.fast]].forEach(([t, col]) => {
+    c.fillStyle = col; c.beginPath(); c.arc(lx + 1.3 * u, yy + 1.6 * u, 1.3 * u, 0, 7); c.fill();
+    c.fillStyle = '#64748b'; c.fillText(t, lx + 3.4 * u, yy); lx += 3.4 * u + c.measureText(t).width + 4 * u;
+  });
+  el._box = [x, y, cw, h];
+}
+function drawEl(c, el, W, H, s, live, exporting) {
+  const x = el.fx * W, y = el.fy * H;
+  if (el.type === 'card') return drawCard(c, el, W, H, s, live);
+  c.textAlign = 'center'; c.textBaseline = 'middle';
+  if (el.type === 'emoji') {
+    const size = W * 0.12 * el.s; setFont(c, size, 400); c.fillText(el.text, x, y + size * 0.05);
+    el._box = [x - size * 0.65, y - size * 0.65, size * 1.3, size * 1.3]; return;
+  }
+  const size = W * (el.kind === 'name' ? 0.07 : 0.055) * el.s;
+  const empty = !el.text.trim();
+  if (empty && exporting) { el._box = [x - size, y - size, size * 2, size * 2]; return; }
+  const txt = empty ? (el.kind === 'name' ? '이름' : '문구') : el.text;
+  setFont(c, size, 800);
+  const tw = c.measureText(txt).width;
+  c.globalAlpha = empty ? 0.5 : 1;
+  if (el.style === 'pill') {
+    const ph = size * 1.55, pw = tw + size * 1.2;
+    c.save(); c.shadowColor = 'rgba(0,0,0,.3)'; c.shadowBlur = size * 0.3;
+    rr(c, x - pw / 2, y - ph / 2, pw, ph, ph / 2); c.fillStyle = 'rgba(255,255,255,.95)'; c.fill(); c.restore();
+    c.fillStyle = '#0f172a'; c.fillText(txt, x, y + size * 0.04);
+    el._box = [x - pw / 2, y - ph / 2, pw, ph];
+  } else {
+    c.lineJoin = 'round'; c.lineWidth = size * 0.2; c.strokeStyle = 'rgba(15,23,42,.8)'; c.strokeText(txt, x, y);
+    c.fillStyle = '#fff'; c.fillText(txt, x, y);
+    el._box = [x - tw / 2 - size * 0.2, y - size * 0.75, tw + size * 0.4, size * 1.5];
+  }
+  c.globalAlpha = 1;
+}
+
+function drawFrame(exporting) {
+  if (!studio.base) return;
+  const { W, H, pace, T } = studio.data, pts = run.points;
+  cx.clearRect(0, 0, W, H); cx.drawImage(studio.base, 0, 0);
+  let stats, live = studio.mode === 'video';
+  if (!live) {
+    drawRoute(cx, pts.length - 1);
+    const e = studio.data.pc[pts.length - 1];
+    setFont(cx, W * 0.06, 400); cx.textAlign = 'center'; cx.textBaseline = 'bottom'; cx.fillText('🏁', e[0] + W * 0.018, e[1] + W * 0.008);
+    stats = { dist: run.dist, ms: run.movingMs, avg: run.dist > 0 ? run.movingMs / run.dist : Infinity, speed: run.movingMs ? run.dist / (run.movingMs / 1000) * 3.6 : 0 };
+  } else {
+    const t = studio.p * T;
+    let lo = 0, hi = pts.length - 1;
+    while (lo < hi) { const m = (lo + hi + 1) >> 1; if (pts[m][2] <= t) lo = m; else hi = m - 1; }
+    let f = 0;
+    if (lo < pts.length - 1 && pts[lo + 1][4] === pts[lo][4]) f = Math.max(0, Math.min(1, (t - pts[lo][2]) / Math.max(1, pts[lo + 1][2] - pts[lo][2])));
+    const dist = lo < pts.length - 1 && f ? pts[lo][3] + (pts[lo + 1][3] - pts[lo][3]) * f : pts[lo][3];
+    const pos = drawRoute(cx, lo + f);
+    // 달리는 점 + 물결
+    const lw = W * 0.012, pulse = (performance.now() / 900) % 1;
+    cx.beginPath(); cx.arc(...pos, lw * (1.6 + pulse * 2.4), 0, 7); cx.fillStyle = `rgba(249,115,22,${0.45 * (1 - pulse)})`; cx.fill();
+    cx.beginPath(); cx.arc(...pos, lw * 1.6, 0, 7); cx.fillStyle = '#f97316'; cx.fill(); cx.lineWidth = lw * 0.55; cx.strokeStyle = '#fff'; cx.stroke();
+    if (studio.p >= 1) { setFont(cx, W * 0.06, 400); cx.textAlign = 'center'; cx.textBaseline = 'bottom'; cx.fillText('🏁', pos[0] + W * 0.018, pos[1] - lw); }
+    stats = { dist, ms: t, avg: dist > 30 ? t / dist : Infinity, cur: pace[lo] };
+    // 아래쪽 진행 막대
+    cx.fillStyle = 'rgba(255,255,255,.25)'; cx.fillRect(0, H - H * 0.006, W, H * 0.006);
+    cx.fillStyle = '#f97316'; cx.fillRect(0, H - H * 0.006, W * studio.p, H * 0.006);
+  }
+  for (const el of studio.els) drawEl(cx, el, W, H, stats, live, exporting);
+  if (!exporting && !studio.recording && studio.sel && studio.sel._box) {
+    const [x, y, w, h] = studio.sel._box;
+    cx.setLineDash([W * 0.012, W * 0.008]); cx.lineWidth = W * 0.004; cx.strokeStyle = '#f97316';
+    cx.strokeRect(x - W * 0.01, y - W * 0.01, w + W * 0.02, h + W * 0.02); cx.setLineDash([]);
+  }
+}
+
+function fitCanvas() {
+  const st = $('.st-stage').getBoundingClientRect();
+  const [W, H] = canvasSize(), aw = st.width - 24, ah = st.height - 14;
+  const k = Math.min(aw / W, ah / H);
+  cv.style.width = Math.max(50, W * k) + 'px'; cv.style.height = Math.max(50, H * k) + 'px';
+}
+window.addEventListener('resize', () => { if (!$('#studio').hidden) fitCanvas(); });
+
+function defaultCard() { return { type: 'card', fx: .5, fy: studio.ratio === '9:16' ? .84 : .78, s: studio.ratio === '9:16' ? 1 : .8 }; }
+async function rebuild() {
+  pause();
+  const [W, H] = canvasSize(); cv.width = W; cv.height = H; fitCanvas();
+  $('#stMsg').hidden = false; $('#stMsg').textContent = '지도 불러오는 중…';
+  studio.base = null; cx.clearRect(0, 0, W, H);
+  await buildBase();
+  $('#stMsg').hidden = true;
+  drawFrame();
+}
+async function openStudio(mode) {
+  if (!run || run.points.length < 2) { alert('경로 기록이 부족해서 만들 수 없어요.'); return; }
+  studio.mode = mode; studio.p = mode === 'video' ? 0 : 1; studio.videoBlob = null;
+  if (!studio.els.length) studio.els = [defaultCard()];
+  studio.sel = null; updSel();
+  $('#stTitle').textContent = mode === 'photo' ? '📷 사진 만들기' : '🎬 경로 영상';
+  $('#stPlayRow').hidden = mode !== 'video';
+  $$('#stRatio button').forEach(b => b.classList.toggle('on', b.dataset.v === studio.ratio));
+  $$('#stSpeed button').forEach(b => b.classList.toggle('on', +b.dataset.v === studio.speed));
+  updSaveBtn();
+  $('#studio').hidden = false;
+  await rebuild();
+  if (mode === 'video') play();
+}
+function closeStudio() { pause(); if (studio.rec) { try { studio.rec.stop(); } catch {} } $('#studio').hidden = true; }
+$('#bPhoto').onclick = () => openStudio('photo');
+$('#bVideo').onclick = () => openStudio('video');
+$('#stClose').onclick = closeStudio;
+
+$$('#stRatio button').forEach(b => b.onclick = () => {
+  if (studio.recording || studio.ratio === b.dataset.v) return;
+  studio.ratio = b.dataset.v;
+  const card = studio.els.find(e => e.type === 'card'); if (card) Object.assign(card, defaultCard());
+  $$('#stRatio button').forEach(x => x.classList.toggle('on', x === b));
+  studio.videoBlob = null; updSaveBtn(); rebuild();
+});
+
+/* 꾸미기: 이름·문구·이모티콘 */
+function addEl(el) { if (studio.recording) return; studio.els.push(el); studio.sel = el; updSel(); changed(); }
+$('#stAddName').onclick = () => { addEl({ type: 'text', kind: 'name', text: '', style: 'outline', fx: .5, fy: .1, s: 1 }); $('#stSelText').focus(); };
+$('#stAddText').onclick = () => { addEl({ type: 'text', kind: 'text', text: '', style: 'pill', fx: .5, fy: .2, s: 1 }); $('#stSelText').focus(); };
+$('#stEmojis').innerHTML = EMOJIS.map(e => `<button>${e}</button>`).join('');
+$$('#stEmojis button').forEach(b => b.onclick = () =>
+  addEl({ type: 'emoji', text: b.textContent, fx: .3 + Math.random() * .4, fy: .3 + Math.random() * .2, s: 1 }));
+function updSel() {
+  const el = studio.sel;
+  $('#stSel').hidden = !el;
+  if (!el) return;
+  $('#stSelText').hidden = el.type !== 'text';
+  $('#stSelStyle').hidden = el.type !== 'text';
+  if (el.type === 'text') $('#stSelText').value = el.text;
+  $('#stDel').hidden = el.type === 'card';
+}
+$('#stSelText').addEventListener('input', e => { if (studio.sel) { studio.sel.text = e.target.value; changed(); } });
+$$('#stSel [data-z]').forEach(b => b.onclick = () => {
+  if (!studio.sel) return;
+  studio.sel.s = Math.max(.4, Math.min(3, studio.sel.s * (+b.dataset.z > 0 ? 1.15 : 1 / 1.15))); changed();
+});
+$('#stSelStyle').onclick = () => { if (studio.sel) { studio.sel.style = studio.sel.style === 'pill' ? 'outline' : 'pill'; changed(); } };
+$('#stDel').onclick = () => {
+  if (!studio.sel || studio.sel.type === 'card') return;
+  studio.els = studio.els.filter(e => e !== studio.sel); studio.sel = null; updSel(); changed();
+};
+function changed() { if (studio.mode === 'video') { studio.videoBlob = null; updSaveBtn(); } if (!studio.playing) drawFrame(); }
+
+/* 끌어서 위치 옮기기 */
+let drag = null;
+function cvPoint(e) { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * cv.width / r.width, (e.clientY - r.top) * cv.height / r.height]; }
+cv.addEventListener('pointerdown', e => {
+  if (studio.recording || !studio.base) return;
+  const [x, y] = cvPoint(e), m = cv.width * 0.02;
+  const hit = [...studio.els].reverse().find(el => el._box && x >= el._box[0] - m && x <= el._box[0] + el._box[2] + m && y >= el._box[1] - m && y <= el._box[1] + el._box[3] + m);
+  studio.sel = hit || null; updSel();
+  if (hit) { drag = { el: hit, dx: x - hit.fx * cv.width, dy: y - hit.fy * cv.height }; cv.setPointerCapture(e.pointerId); }
+  if (!studio.playing) drawFrame();
+});
+cv.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const [x, y] = cvPoint(e);
+  drag.el.fx = Math.max(0, Math.min(1, (x - drag.dx) / cv.width));
+  drag.el.fy = Math.max(0, Math.min(1, (y - drag.dy) / cv.height));
+  if (!studio.playing) drawFrame();
+});
+cv.addEventListener('pointerup', () => { if (drag) { drag = null; changed(); } });
+cv.addEventListener('pointercancel', () => { drag = null; });
+
+/* 영상 재생 */
+let rafId = null, lastTs = 0;
+function loop(ts) {
+  if (!studio.playing) return;
+  const dt = lastTs ? Math.min(100, ts - lastTs) : 16; lastTs = ts;
+  studio.p = Math.min(1, studio.p + dt / (studio.D * 1000) * (studio.recording ? 1 : studio.speed));
+  $('#stSeek').value = Math.round(studio.p * 1000);
+  drawFrame();
+  if (studio.recording) $('#stSave').textContent = `⏺ 녹화 중… ${Math.round(studio.p * 100)}%`;
+  if (studio.p >= 1) { studio.playing = false; updPlayBtn(); studio.onEnd?.(); return; }
+  rafId = requestAnimationFrame(loop);
+}
+function play() { if (studio.mode !== 'video') return; if (studio.p >= 1) studio.p = 0; studio.playing = true; lastTs = 0; rafId = requestAnimationFrame(loop); updPlayBtn(); }
+function pause() { studio.playing = false; cancelAnimationFrame(rafId); updPlayBtn(); }
+function updPlayBtn() { $('#stPlay').textContent = studio.playing ? '⏸' : '▶'; }
+$('#stPlay').onclick = () => { if (studio.recording) return; studio.playing ? pause() : play(); };
+$('#stSeek').addEventListener('input', e => { if (studio.recording) return; pause(); studio.p = e.target.value / 1000; drawFrame(); });
+$$('#stSpeed button').forEach(b => b.onclick = () => {
+  studio.speed = +b.dataset.v; $$('#stSpeed button').forEach(x => x.classList.toggle('on', x === b));
+});
+
+/* 저장 / 공유 */
+const VIDEO_MIME = (() => {
+  if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream) return null;
+  return ['video/mp4;codecs=avc1.42E01E', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm']
+    .find(t => { try { return MediaRecorder.isTypeSupported(t); } catch { return false; } }) || null;
+})();
+function updSaveBtn() {
+  const b = $('#stSave'); b.disabled = false;
+  if (studio.mode === 'photo') b.textContent = '💾 사진 저장';
+  else if (!VIDEO_MIME) { b.textContent = '이 브라우저는 동영상 저장을 지원하지 않아요'; b.disabled = true; }
+  else b.textContent = studio.videoBlob ? '📤 동영상 저장 / 공유' : '🎬 동영상 만들기';
+}
+function fileStamp() { const d = new Date(run.startedAt); return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}_${String(d.getHours()).padStart(2, '0')}${String(d.getMinutes()).padStart(2, '0')}`; }
+async function shareOrDownload(blob, name) {
+  const file = new File([blob], name, { type: blob.type });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], title: '자유학교 러닝' }); return; }
+    catch (e) { if (e.name === 'AbortError') return; }
+  }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+}
+$('#stSave').onclick = async () => {
+  if (!studio.base || studio.recording) return;
+  if (studio.mode === 'photo') {
+    drawFrame(true);
+    const blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', 0.92));
+    drawFrame();
+    if (blob) shareOrDownload(blob, `running_${fileStamp()}.jpg`);
+    return;
+  }
+  if (studio.videoBlob) { shareOrDownload(studio.videoBlob, `running_video_${fileStamp()}.${studio.videoBlob.type.includes('mp4') ? 'mp4' : 'webm'}`); return; }
+  // 녹화: 처음부터 1배속으로 재생하며 화면을 동영상으로 기록
+  pause(); studio.sel = null; updSel();
+  studio.recording = true; studio.p = 0; drawFrame(true);
+  const stream = cv.captureStream(30), chunks = [];
+  const rec = new MediaRecorder(stream, { mimeType: VIDEO_MIME, videoBitsPerSecond: 5e6 });
+  studio.rec = rec;
+  rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+  const stopped = new Promise(r => rec.onstop = r);
+  rec.start(250);
+  await new Promise(r => { studio.onEnd = r; play(); });
+  studio.onEnd = null;
+  // 마지막 장면 1.5초 유지
+  const hold = performance.now();
+  await new Promise(r => { const f = () => { drawFrame(true); performance.now() - hold < 1500 && !$('#studio').hidden ? requestAnimationFrame(f) : r(); }; f(); });
+  rec.stop(); await stopped;
+  stream.getTracks().forEach(t => t.stop());
+  studio.recording = false; studio.rec = null;
+  if (!$('#studio').hidden && chunks.length) studio.videoBlob = new Blob(chunks, { type: VIDEO_MIME.split(';')[0] });
+  updSaveBtn(); drawFrame();
+};
+
 function toSetup() {
+  closeStudio();
   stopDemo(); releaseScreen();
   run = null; finished = false; routeGroup.clearLayers(); routeLines = {};
   unstore('runActive');
